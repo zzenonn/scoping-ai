@@ -33,8 +33,8 @@ type QuestionSetRepository struct {
 	client *firestore.Client
 }
 
-func NewQuestionSetRepository(client *firestore.Client) *QuestionSetRepository {
-	return &QuestionSetRepository{
+func NewQuestionSetRepository(client *firestore.Client) QuestionSetRepository {
+	return QuestionSetRepository{
 		client: client,
 	}
 }
@@ -79,8 +79,17 @@ func GetQuestionSetByTechName(ctx context.Context, client *firestore.Client, tec
 	return nil, nil
 }
 
-func GetAllQuestionSets(ctx context.Context, client *firestore.Client) ([]TrainingNeedsQuestions.QuestionSet, error) {
-	iter := client.Collection("questionSets").Documents(ctx)
+func GetAllQuestionSets(ctx context.Context, client *firestore.Client, page int, pageSize int) ([]TrainingNeedsQuestions.QuestionSet, error) {
+	if page < 1 {
+		page = 1
+	}
+	if pageSize < 1 {
+		pageSize = 10
+	}
+
+	offset := (page - 1) * pageSize
+
+	iter := client.Collection("questionSets").OrderBy("TechnologyName", firestore.Asc).Offset(offset).Limit(pageSize).Documents(ctx)
 	var qSets []TrainingNeedsQuestions.QuestionSet
 
 	for {

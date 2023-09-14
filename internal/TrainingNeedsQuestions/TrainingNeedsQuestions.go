@@ -47,6 +47,8 @@ type QuestionSet struct {
 // Implements the question set repository interface design pattern
 type QuestionSetRepository interface {
 	GetQuestionSet(ctx context.Context, technologyName string) (*QuestionSet, error)
+	GetAllQuestionSets(ctx context.Context) ([]QuestionSet, error)
+	GetQuestionSetByTechName(ctx context.Context, technologyName string) (*QuestionSet, error)
 	PostQuestionSet(ctx context.Context, questionSet *QuestionSet) (*QuestionSet, error)
 	UpdateQuestionSet(ctx context.Context, questionSet *QuestionSet) (*QuestionSet, error)
 	DeleteQuestionSet(ctx context.Context, questionSet *QuestionSet) error
@@ -73,6 +75,32 @@ func (q *QuestionSetService) GetQuestionSet(ctx context.Context, technologyName 
 	}
 
 	return *questionSet, nil
+}
+
+func (q *QuestionSetService) GetAllQuestionSets(ctx context.Context) ([]QuestionSet, error) {
+	log.Debug("Retreiving all question sets . . .")
+
+	questionSets, err := q.questionSetRepository.GetAllQuestionSets(ctx)
+
+	if err != nil {
+		log.Error("Failed to retrieve all question sets")
+		return nil, err
+	}
+
+	return questionSets, nil
+}
+
+func (q *QuestionSetService) GetQuestionSetByTechName(ctx context.Context, technologyName string) (QuestionSet, error) {
+	log.Debug("Retreiving question set by technology name . . .")
+
+	qSet, err := q.questionSetRepository.GetQuestionSetByTechName(ctx, technologyName)
+
+	if err != nil {
+		log.Error("Failed to retrieve question set by technology name")
+		return QuestionSet{}, err
+	}
+
+	return *qSet, nil
 }
 
 func (q *QuestionSetService) PostQuestionSet(ctx context.Context, questionSet *QuestionSet) (QuestionSet, error) {
