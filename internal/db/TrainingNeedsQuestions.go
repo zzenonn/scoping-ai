@@ -29,6 +29,8 @@ func init() {
 
 }
 
+const COLLECTION_NAME = "question_sets"
+
 type QuestionSetRepository struct {
 	client *firestore.Client
 }
@@ -40,7 +42,7 @@ func NewQuestionSetRepository(client *firestore.Client) QuestionSetRepository {
 }
 
 func (repo *QuestionSetRepository) PostQuestionSet(ctx context.Context, qSet TrainingNeedsQuestions.QuestionSet) (TrainingNeedsQuestions.QuestionSet, error) {
-	ref, _, err := repo.client.Collection("questionSets").Add(ctx, qSet)
+	ref, _, err := repo.client.Collection(COLLECTION_NAME).Add(ctx, qSet)
 	if err != nil {
 		return TrainingNeedsQuestions.QuestionSet{}, err
 	}
@@ -54,7 +56,7 @@ func (repo *QuestionSetRepository) PostQuestionSet(ctx context.Context, qSet Tra
 }
 
 func (repo *QuestionSetRepository) GetQuestionSet(ctx context.Context, docID string) (TrainingNeedsQuestions.QuestionSet, error) {
-	doc, err := repo.client.Collection("questionSets").Doc(docID).Get(ctx)
+	doc, err := repo.client.Collection(COLLECTION_NAME).Doc(docID).Get(ctx)
 	if err != nil {
 		return TrainingNeedsQuestions.QuestionSet{}, err
 	}
@@ -65,7 +67,7 @@ func (repo *QuestionSetRepository) GetQuestionSet(ctx context.Context, docID str
 }
 
 func (repo *QuestionSetRepository) GetQuestionSetByTechName(ctx context.Context, techName string) (TrainingNeedsQuestions.QuestionSet, error) {
-	iter := repo.client.Collection("questionSets").Where("TechnologyName", "==", techName).Documents(ctx)
+	iter := repo.client.Collection(COLLECTION_NAME).Where("TechnologyName", "==", techName).Documents(ctx)
 	for {
 		doc, err := iter.Next()
 		if err == iterator.Done {
@@ -95,7 +97,7 @@ func (repo *QuestionSetRepository) GetAllQuestionSets(ctx context.Context, page 
 
 	offset := (page - 1) * pageSize
 
-	iter := repo.client.Collection("questionSets").OrderBy("TechnologyName", firestore.Asc).Offset(offset).Limit(pageSize).Documents(ctx)
+	iter := repo.client.Collection(COLLECTION_NAME).OrderBy("TechnologyName", firestore.Asc).Offset(offset).Limit(pageSize).Documents(ctx)
 	var qSets []TrainingNeedsQuestions.QuestionSet
 
 	for {
@@ -119,11 +121,11 @@ func (repo *QuestionSetRepository) GetAllQuestionSets(ctx context.Context, page 
 }
 
 func (repo *QuestionSetRepository) UpdateQuestionSet(ctx context.Context, qSet TrainingNeedsQuestions.QuestionSet) (TrainingNeedsQuestions.QuestionSet, error) {
-	_, err := repo.client.Collection("questionSets").Doc(qSet.Id).Set(ctx, qSet, firestore.MergeAll)
+	_, err := repo.client.Collection(COLLECTION_NAME).Doc(qSet.Id).Set(ctx, qSet, firestore.MergeAll)
 	return qSet, err
 }
 
 func (repo *QuestionSetRepository) DeleteQuestionSet(ctx context.Context, docID string) error {
-	_, err := repo.client.Collection("questionSets").Doc(docID).Delete(ctx)
+	_, err := repo.client.Collection(COLLECTION_NAME).Doc(docID).Delete(ctx)
 	return err
 }
