@@ -42,17 +42,12 @@ func NewQuestionSetRepository(client *firestore.Client) QuestionSetRepository {
 }
 
 func (repo *QuestionSetRepository) PostQuestionSet(ctx context.Context, qSet TrainingNeedsQuestions.QuestionSet) (TrainingNeedsQuestions.QuestionSet, error) {
-	ref, _, err := repo.client.Collection(COLLECTION_NAME).Add(ctx, qSet)
+	_, err := repo.client.Collection(COLLECTION_NAME).Doc(qSet.Id).Set(ctx, qSet)
 	if err != nil {
 		return TrainingNeedsQuestions.QuestionSet{}, err
 	}
 
-	postedQSet, err := repo.GetQuestionSet(ctx, ref.ID)
-	if err != nil {
-		return TrainingNeedsQuestions.QuestionSet{}, err
-	}
-
-	return postedQSet, nil
+	return qSet, nil
 }
 
 func (repo *QuestionSetRepository) GetQuestionSet(ctx context.Context, docID string) (TrainingNeedsQuestions.QuestionSet, error) {

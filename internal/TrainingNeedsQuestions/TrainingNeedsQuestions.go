@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -104,23 +105,24 @@ func (q *QuestionSetService) GetQuestionSetByTechName(ctx context.Context, techn
 	return qSet, nil
 }
 
-func (q *QuestionSetService) PostQuestionSet(ctx context.Context, questionSet QuestionSet) (QuestionSet, error) {
+func (q *QuestionSetService) PostQuestionSet(ctx context.Context, qSet QuestionSet) (QuestionSet, error) {
 	log.Debug("Posting question set . . .")
+	qSet.Id = uuid.New().String()
 
-	postedQuestionSet, err := q.questionSetRepository.PostQuestionSet(ctx, questionSet)
+	postedQSet, err := q.questionSetRepository.PostQuestionSet(ctx, qSet)
 
 	if err != nil {
 		log.Error("Failed to post question set")
 		return QuestionSet{}, err
 	}
 
-	return postedQuestionSet, nil
+	return postedQSet, nil
 }
 
-func (q *QuestionSetService) UpdateQuestionSet(ctx context.Context, questionSet QuestionSet) (QuestionSet, error) {
+func (q *QuestionSetService) UpdateQuestionSet(ctx context.Context, qSet QuestionSet) (QuestionSet, error) {
 	log.Debug("Updating question set . . .")
 
-	updatedQSet, err := q.questionSetRepository.UpdateQuestionSet(ctx, questionSet)
+	updatedQSet, err := q.questionSetRepository.UpdateQuestionSet(ctx, qSet)
 
 	if err != nil {
 		log.Error("Failed to update question set")
