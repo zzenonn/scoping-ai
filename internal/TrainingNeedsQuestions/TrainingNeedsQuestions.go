@@ -40,18 +40,19 @@ type Question struct {
 
 // Question set representation
 type QuestionSet struct {
+	Id             string     `json:"id,omitempty"`
 	TechnologyName *string    `json:"technology_name,omitempty"`
 	Questions      []Question `json:"questions,omitempty"`
 }
 
 // Implements the question set repository interface design pattern
 type QuestionSetRepository interface {
-	GetQuestionSet(ctx context.Context, technologyName string) (*QuestionSet, error)
-	GetAllQuestionSets(ctx context.Context) ([]QuestionSet, error)
-	GetQuestionSetByTechName(ctx context.Context, technologyName string) (*QuestionSet, error)
-	PostQuestionSet(ctx context.Context, questionSet *QuestionSet) (*QuestionSet, error)
-	UpdateQuestionSet(ctx context.Context, questionSet *QuestionSet) (*QuestionSet, error)
-	DeleteQuestionSet(ctx context.Context, questionSet *QuestionSet) error
+	GetQuestionSet(ctx context.Context, technologyName string) (QuestionSet, error)
+	GetAllQuestionSets(ctx context.Context, page int, pageSize int) ([]QuestionSet, error)
+	GetQuestionSetByTechName(ctx context.Context, technologyName string) (QuestionSet, error)
+	PostQuestionSet(ctx context.Context, questionSet QuestionSet) (QuestionSet, error)
+	UpdateQuestionSet(ctx context.Context, questionSet QuestionSet) (QuestionSet, error)
+	DeleteQuestionSet(ctx context.Context, id string) error
 }
 
 type QuestionSetService struct {
@@ -74,13 +75,13 @@ func (q *QuestionSetService) GetQuestionSet(ctx context.Context, technologyName 
 		return QuestionSet{}, err
 	}
 
-	return *questionSet, nil
+	return questionSet, nil
 }
 
-func (q *QuestionSetService) GetAllQuestionSets(ctx context.Context) ([]QuestionSet, error) {
+func (q *QuestionSetService) GetAllQuestionSets(ctx context.Context, page int, pageSize int) ([]QuestionSet, error) {
 	log.Debug("Retreiving all question sets . . .")
 
-	questionSets, err := q.questionSetRepository.GetAllQuestionSets(ctx)
+	questionSets, err := q.questionSetRepository.GetAllQuestionSets(ctx, page, pageSize)
 
 	if err != nil {
 		log.Error("Failed to retrieve all question sets")
@@ -100,10 +101,10 @@ func (q *QuestionSetService) GetQuestionSetByTechName(ctx context.Context, techn
 		return QuestionSet{}, err
 	}
 
-	return *qSet, nil
+	return qSet, nil
 }
 
-func (q *QuestionSetService) PostQuestionSet(ctx context.Context, questionSet *QuestionSet) (QuestionSet, error) {
+func (q *QuestionSetService) PostQuestionSet(ctx context.Context, questionSet QuestionSet) (QuestionSet, error) {
 	log.Debug("Posting question set . . .")
 
 	postedQuestionSet, err := q.questionSetRepository.PostQuestionSet(ctx, questionSet)
@@ -113,24 +114,24 @@ func (q *QuestionSetService) PostQuestionSet(ctx context.Context, questionSet *Q
 		return QuestionSet{}, err
 	}
 
-	return *postedQuestionSet, nil
+	return postedQuestionSet, nil
 }
 
-func (q *QuestionSetService) UpdateQuestionSet(ctx context.Context, questionSet *QuestionSet) (QuestionSet, error) {
+func (q *QuestionSetService) UpdateQuestionSet(ctx context.Context, questionSet QuestionSet) (QuestionSet, error) {
 	log.Debug("Updating question set . . .")
 
-	updatedQuestionSet, err := q.questionSetRepository.UpdateQuestionSet(ctx, questionSet)
+	updatedQSet, err := q.questionSetRepository.UpdateQuestionSet(ctx, questionSet)
 
 	if err != nil {
 		log.Error("Failed to update question set")
 		return QuestionSet{}, err
 	}
 
-	return *updatedQuestionSet, nil
+	return updatedQSet, nil
 }
 
-func (q *QuestionSetService) DeleteQuestionSet(ctx context.Context, questionSet *QuestionSet) error {
-	err := q.questionSetRepository.DeleteQuestionSet(ctx, questionSet)
+func (q *QuestionSetService) DeleteQuestionSet(ctx context.Context, id string) error {
+	err := q.questionSetRepository.DeleteQuestionSet(ctx, id)
 
 	return err
 }

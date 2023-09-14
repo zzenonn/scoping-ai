@@ -39,26 +39,32 @@ func NewQuestionSetRepository(client *firestore.Client) QuestionSetRepository {
 	}
 }
 
-func (repo *QuestionSetRepository) PostQuestionSet(ctx context.Context, qSet TrainingNeedsQuestions.QuestionSet) (string, error) {
+func (repo *QuestionSetRepository) PostQuestionSet(ctx context.Context, qSet TrainingNeedsQuestions.QuestionSet) (TrainingNeedsQuestions.QuestionSet, error) {
 	ref, _, err := repo.client.Collection("questionSets").Add(ctx, qSet)
 	if err != nil {
-		return "", err
+		return TrainingNeedsQuestions.QuestionSet{}, err
 	}
-	return ref.ID, nil
+
+	postedQSet, err := repo.GetQuestionSet(ctx, ref.ID)
+	if err != nil {
+		return TrainingNeedsQuestions.QuestionSet{}, err
+	}
+
+	return postedQSet, nil
 }
 
-func (repo *QuestionSetRepository) GetQuestionSet(ctx context.Context, docID string) (*TrainingNeedsQuestions.QuestionSet, error) {
+func (repo *QuestionSetRepository) GetQuestionSet(ctx context.Context, docID string) (TrainingNeedsQuestions.QuestionSet, error) {
 	doc, err := repo.client.Collection("questionSets").Doc(docID).Get(ctx)
 	if err != nil {
-		return nil, err
+		return TrainingNeedsQuestions.QuestionSet{}, err
 	}
 
 	var qSet TrainingNeedsQuestions.QuestionSet
 	doc.DataTo(&qSet)
-	return &qSet, nil
+	return qSet, nil
 }
 
-func (repo *QuestionSetRepository) GetQuestionSetByTechName(ctx context.Context, techName string) (*TrainingNeedsQuestions.QuestionSet, error) {
+func (repo *QuestionSetRepository) GetQuestionSetByTechName(ctx context.Context, techName string) (TrainingNeedsQuestions.QuestionSet, error) {
 	iter := repo.client.Collection("questionSets").Where("TechnologyName", "==", techName).Documents(ctx)
 	for {
 		doc, err := iter.Next()
@@ -66,17 +72,17 @@ func (repo *QuestionSetRepository) GetQuestionSetByTechName(ctx context.Context,
 			break
 		}
 		if err != nil {
-			return nil, err
+			return TrainingNeedsQuestions.QuestionSet{}, err
 		}
 
 		var qSet TrainingNeedsQuestions.QuestionSet
 		err = doc.DataTo(&qSet)
 		if err != nil {
-			return nil, err
+			return TrainingNeedsQuestions.QuestionSet{}, err
 		}
-		return &qSet, nil
+		return qSet, nil
 	}
-	return nil, nil
+	return TrainingNeedsQuestions.QuestionSet{}, nil
 }
 
 func (repo *QuestionSetRepository) GetAllQuestionSets(ctx context.Context, page int, pageSize int) ([]TrainingNeedsQuestions.QuestionSet, error) {
@@ -112,7 +118,12 @@ func (repo *QuestionSetRepository) GetAllQuestionSets(ctx context.Context, page 
 	return qSets, nil
 }
 
-func (repo *QuestionSetRepository) UpdateQuestionSet(ctx context.Context, docID string, updates []firestore.Update) error {
-	_, err := repo.client.Collection("questionSets").Doc(docID).Update(ctx, updates)
+func (repo *QuestionSetRepository) UpdateQuestionSet(ctx context.Context, qSet TrainingNeedsQuestions.QuestionSet) (TrainingNeedsQuestions.QuestionSet, error) {
+	_, err := repo.client.Collection("questionSets").Doc(qSet.Id).Set(ctx, qSet, firestore.MergeAll)
+	return qSet, err
+}
+
+func (repo *QuestionSetRepository) DeleteQuestionSet(ctx context.Context, docID string) error {
+	_, err := repo.client.Collection("questionSets").Doc(docID).Delete(ctx)
 	return err
 }
