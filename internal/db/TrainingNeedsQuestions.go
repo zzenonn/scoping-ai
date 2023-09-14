@@ -39,16 +39,16 @@ func NewQuestionSetRepository(client *firestore.Client) QuestionSetRepository {
 	}
 }
 
-func PostQuestionSet(ctx context.Context, client *firestore.Client, qSet TrainingNeedsQuestions.QuestionSet) (string, error) {
-	ref, _, err := client.Collection("questionSets").Add(ctx, qSet)
+func (repo *QuestionSetRepository) PostQuestionSet(ctx context.Context, qSet TrainingNeedsQuestions.QuestionSet) (string, error) {
+	ref, _, err := repo.client.Collection("questionSets").Add(ctx, qSet)
 	if err != nil {
 		return "", err
 	}
 	return ref.ID, nil
 }
 
-func GetQuestionSet(ctx context.Context, client *firestore.Client, docID string) (*TrainingNeedsQuestions.QuestionSet, error) {
-	doc, err := client.Collection("questionSets").Doc(docID).Get(ctx)
+func (repo *QuestionSetRepository) GetQuestionSet(ctx context.Context, docID string) (*TrainingNeedsQuestions.QuestionSet, error) {
+	doc, err := repo.client.Collection("questionSets").Doc(docID).Get(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -58,8 +58,8 @@ func GetQuestionSet(ctx context.Context, client *firestore.Client, docID string)
 	return &qSet, nil
 }
 
-func GetQuestionSetByTechName(ctx context.Context, client *firestore.Client, techName string) (*TrainingNeedsQuestions.QuestionSet, error) {
-	iter := client.Collection("questionSets").Where("TechnologyName", "==", techName).Documents(ctx)
+func (repo *QuestionSetRepository) GetQuestionSetByTechName(ctx context.Context, techName string) (*TrainingNeedsQuestions.QuestionSet, error) {
+	iter := repo.client.Collection("questionSets").Where("TechnologyName", "==", techName).Documents(ctx)
 	for {
 		doc, err := iter.Next()
 		if err == iterator.Done {
@@ -79,7 +79,7 @@ func GetQuestionSetByTechName(ctx context.Context, client *firestore.Client, tec
 	return nil, nil
 }
 
-func GetAllQuestionSets(ctx context.Context, client *firestore.Client, page int, pageSize int) ([]TrainingNeedsQuestions.QuestionSet, error) {
+func (repo *QuestionSetRepository) GetAllQuestionSets(ctx context.Context, page int, pageSize int) ([]TrainingNeedsQuestions.QuestionSet, error) {
 	if page < 1 {
 		page = 1
 	}
@@ -89,7 +89,7 @@ func GetAllQuestionSets(ctx context.Context, client *firestore.Client, page int,
 
 	offset := (page - 1) * pageSize
 
-	iter := client.Collection("questionSets").OrderBy("TechnologyName", firestore.Asc).Offset(offset).Limit(pageSize).Documents(ctx)
+	iter := repo.client.Collection("questionSets").OrderBy("TechnologyName", firestore.Asc).Offset(offset).Limit(pageSize).Documents(ctx)
 	var qSets []TrainingNeedsQuestions.QuestionSet
 
 	for {
@@ -112,7 +112,7 @@ func GetAllQuestionSets(ctx context.Context, client *firestore.Client, page int,
 	return qSets, nil
 }
 
-func UpdateQuestionSet(ctx context.Context, client *firestore.Client, docID string, updates []firestore.Update) error {
-	_, err := client.Collection("questionSets").Doc(docID).Update(ctx, updates)
+func (repo *QuestionSetRepository) UpdateQuestionSet(ctx context.Context, docID string, updates []firestore.Update) error {
+	_, err := repo.client.Collection("questionSets").Doc(docID).Update(ctx, updates)
 	return err
 }
