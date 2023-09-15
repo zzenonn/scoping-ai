@@ -46,11 +46,9 @@ type QuestionSetHandler struct {
 
 func NewQuestionSetHandler(s QuestionSetService) *QuestionSetHandler {
 
-	h := &QuestionSetHandler{
+	return &QuestionSetHandler{
 		questionSetService: s,
 	}
-
-	return h
 }
 
 func (h *QuestionSetHandler) PostQuestionSet(w http.ResponseWriter, r *http.Request) {
@@ -188,12 +186,28 @@ func (h *QuestionSetHandler) mapRoutes(router chi.Router) {
 	router.Route("/api/v1/question-sets", func(r chi.Router) {
 		r.Post("/", h.PostQuestionSet)
 
-		r.With(h.queryParamMiddleware).Get("/", h.GetAllQuestionSets)
+		r.With(h.qSetQueryParamMiddleware).Get("/", h.GetAllQuestionSets)
 
 		r.Route("/{id}", func(r chi.Router) {
 			r.Get("/", h.GetQuestionSet)
 			r.Put("/", h.UpdateQuestionSet)
 			r.Delete("/", h.DeleteQuestionSet)
 		})
+	})
+}
+
+func (h *CourseOutlineHandler) mapRoutes(router chi.Router) {
+	router.Route("/api/v1/course-outlines", func(r chi.Router) {
+		r.Post("/", h.PostCourseOutline)
+
+		r.Get("/", h.GetAllCourseOutlines)
+
+		r.Route("/{id}", func(r chi.Router) {
+			r.Get("/", h.GetCourseOutline)
+			r.Put("/", h.UpdateCourseOutline)
+			r.Delete("/", h.DeleteCourseOutline)
+		})
+
+		r.With(h.qSetQueryParamMiddleware).Get("/filter", h.GetCourseOutlinesByFilter)
 	})
 }
