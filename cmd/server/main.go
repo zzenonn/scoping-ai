@@ -8,8 +8,8 @@ import (
 
 	"strings"
 
-	"github.com/zzenonn/trainocate-tna/internal/TrainingNeedsQuestions"
 	"github.com/zzenonn/trainocate-tna/internal/db"
+	tna "github.com/zzenonn/trainocate-tna/internal/tna"
 	transportHttp "github.com/zzenonn/trainocate-tna/internal/transport/http"
 )
 
@@ -48,7 +48,7 @@ func Run(projectName string) error {
 	// }
 
 	qSetRepository := db.NewQuestionSetRepository(firestoreDb.Client)
-	qSetService := TrainingNeedsQuestions.NewQuestionService(&qSetRepository)
+	qSetService := tna.NewQuestionService(&qSetRepository)
 	qSetHandler := transportHttp.NewQuestionSetHandler(qSetService)
 
 	httpHandler := transportHttp.NewMainHandler()
