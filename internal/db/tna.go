@@ -124,7 +124,7 @@ func (repo *QuestionSetRepository) GetAllQuestionSets(ctx context.Context, page 
 
 	offset := (page - 1) * pageSize
 
-	iter := repo.client.Collection(QUESTION_SET_COLLECTION_NAME).OrderBy("TechnologyName", firestore.Asc).Offset(offset).Limit(pageSize).Documents(ctx)
+	iter := repo.client.Collection(QUESTION_SET_COLLECTION_NAME).OrderBy("technology_name", firestore.Asc).Offset(offset).Limit(pageSize).Documents(ctx)
 	var qSets []tna.QuestionSet
 
 	for {
