@@ -132,21 +132,15 @@ func (h *CourseOutlineHandler) GetAllCourseOutlines(w http.ResponseWriter, r *ht
 	pageStr := r.URL.Query().Get("page")
 	pageSizeStr := r.URL.Query().Get("pageSize")
 
-	// Convert page and pageSize to int
+	// Convert them to integers with some default values
 	page, err := strconv.Atoi(pageStr)
-
-	if err != nil {
-		log.Error(err)
-		w.WriteHeader(http.StatusBadRequest)
-		return
+	if err != nil || page < 1 {
+		page = 1
 	}
 
 	pageSize, err := strconv.Atoi(pageSizeStr)
-
-	if err != nil {
-		log.Error(err)
-		w.WriteHeader(http.StatusBadRequest)
-		return
+	if err != nil || pageSize < 1 {
+		pageSize = 10
 	}
 
 	courseOutlines, err := h.courseOutlineService.GetAllCourseOutlines(r.Context(), page, pageSize)
