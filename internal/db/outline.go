@@ -128,7 +128,7 @@ func (repo *CourseOutlineRepository) GetAllCourseOutlines(ctx context.Context, p
 
 	offset := (page - 1) * pageSize
 
-	iter := repo.client.Collection(COURSE_OUTLINE_COLLECTION_NAME).OrderBy("CourseCode", firestore.Asc).Offset(offset).Limit(pageSize).Documents(ctx)
+	iter := repo.client.Collection(COURSE_OUTLINE_COLLECTION_NAME).OrderBy("course_code", firestore.Asc).Offset(offset).Limit(pageSize).Documents(ctx)
 	var cOutlines []outline.CourseOutline
 
 	for {
