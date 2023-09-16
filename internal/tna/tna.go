@@ -35,15 +35,15 @@ func init() {
 
 // Question representation
 type Question struct {
-	Category *string `json:"category,omitempty"`
-	Text     *string `json:"text,omitempty"`
+	Category *string `json:"category,omitempty" firestore:"category,omitempty"`
+	Text     *string `json:"text,omitempty" firestore:"text,omitempty"`
 }
 
 // Question set representation
 type QuestionSet struct {
-	Id             string     `json:"id,omitempty"`
-	TechnologyName *string    `json:"technology_name,omitempty"`
-	Questions      []Question `json:"questions,omitempty"`
+	Id             string     `json:"id,omitempty" firestore:"id,omitempty"`
+	TechnologyName *string    `json:"technology_name,omitempty" firestore:"technology_name,omitempty"`
+	Questions      []Question `json:"questions,omitempty" firestore:"questions,omitempty"`
 }
 
 // Implements the question set repository interface design pattern

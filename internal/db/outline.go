@@ -68,7 +68,13 @@ func (repo *CourseOutlineRepository) GetCourseOutline(ctx context.Context, docID
 	}
 
 	var cOutline outline.CourseOutline
+
+	// Print contents of doc
+	log.Debug(doc.Data())
+
 	doc.DataTo(&cOutline)
+
+	cOutline.Id = docID
 
 	return cOutline, nil
 }

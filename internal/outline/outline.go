@@ -37,11 +37,11 @@ var (
 )
 
 type CourseOutline struct {
-	Id             string `json:"id,omitempty"`
-	TechnologyName string `json:"technology_name,omitempty"`
-	CourseCode     string `json:"course_code,omitempty"`
-	CourseName     string `json:"course_name,omitempty"`
-	Outline        string `json:"outline,omitempty"`
+	Id             string  `json:"id,omitempty" firestore:"id,omitempty"`
+	TechnologyName *string `json:"technology_name,omitempty" firestore:"technology_name,omitempty"`
+	CourseCode     *string `json:"course_code,omitempty" firestore:"course_code,omitempty"`
+	CourseName     *string `json:"course_name,omitempty" firestore:"course_name,omitempty"`
+	Outline        *string `json:"outline,omitempty" firestore:"outline,omitempty"`
 }
 
 type CourseOutlineRepository interface {
