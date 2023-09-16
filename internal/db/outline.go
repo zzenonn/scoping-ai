@@ -35,6 +35,15 @@ type CourseOutlineRepository struct {
 	client *firestore.Client
 }
 
+func convertOutlineToMap(courseOutline outline.CourseOutline) map[string]interface{} {
+	return map[string]interface{}{
+		"technology_name": courseOutline.TechnologyName,
+		"course_code":     courseOutline.CourseCode,
+		"course_name":     courseOutline.CourseName,
+		"outline":         courseOutline.Outline,
+	}
+}
+
 func NewCourseOutlineRepository(client *firestore.Client) CourseOutlineRepository {
 	return CourseOutlineRepository{
 		client: client,
@@ -42,7 +51,9 @@ func NewCourseOutlineRepository(client *firestore.Client) CourseOutlineRepositor
 }
 
 func (repo *CourseOutlineRepository) PostCourseOutline(ctx context.Context, cOutline outline.CourseOutline) (outline.CourseOutline, error) {
-	_, err := repo.client.Collection(COURSE_OUTLINE_COLLECTION_NAME).Doc(cOutline.Id).Set(ctx, cOutline)
+	cOutlineMap := convertOutlineToMap(cOutline)
+
+	_, err := repo.client.Collection(COURSE_OUTLINE_COLLECTION_NAME).Doc(cOutline.Id).Set(ctx, cOutlineMap)
 	if err != nil {
 		return outline.CourseOutline{}, err
 	}
@@ -139,6 +150,17 @@ func (repo *CourseOutlineRepository) GetAllCourseOutlines(ctx context.Context, p
 	}
 
 	return cOutlines, nil
+}
+
+func (repo *CourseOutlineRepository) UpdateCourseOutline(ctx context.Context, cOutline outline.CourseOutline) (outline.CourseOutline, error) {
+	cOutlineMap := convertOutlineToMap(cOutline)
+
+	_, err := repo.client.Collection(COURSE_OUTLINE_COLLECTION_NAME).Doc(cOutline.Id).Set(ctx, cOutlineMap)
+	if err != nil {
+		return outline.CourseOutline{}, err
+	}
+
+	return cOutline, nil
 }
 
 func (repo *CourseOutlineRepository) DeleteCourseOutline(ctx context.Context, docID string) error {

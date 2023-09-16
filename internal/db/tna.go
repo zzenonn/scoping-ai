@@ -41,8 +41,36 @@ func NewQuestionSetRepository(client *firestore.Client) QuestionSetRepository {
 	}
 }
 
+func convertQuestionSetToMap(qSet tna.QuestionSet) map[string]interface{} {
+	qSetMap := make(map[string]interface{})
+
+	// Omitting the ID field to avoid redundant Ids
+	if qSet.TechnologyName != nil {
+		qSetMap["technology_name"] = *qSet.TechnologyName
+	}
+
+	questions := make([]map[string]interface{}, len(qSet.Questions))
+	for i, question := range qSet.Questions {
+		questionMap := make(map[string]interface{})
+		if question.Category != nil {
+			questionMap["category"] = *question.Category
+		}
+		if question.Text != nil {
+			questionMap["text"] = *question.Text
+		}
+		questions[i] = questionMap
+	}
+
+	qSetMap["questions"] = questions
+
+	return qSetMap
+}
+
 func (repo *QuestionSetRepository) PostQuestionSet(ctx context.Context, qSet tna.QuestionSet) (tna.QuestionSet, error) {
-	_, err := repo.client.Collection(QUESTION_SET_COLLECTION_NAME).Doc(qSet.Id).Set(ctx, qSet)
+
+	qSetMap := convertQuestionSetToMap(qSet)
+
+	_, err := repo.client.Collection(QUESTION_SET_COLLECTION_NAME).Doc(qSet.Id).Set(ctx, qSetMap)
 	if err != nil {
 		return tna.QuestionSet{}, err
 	}
@@ -58,6 +86,8 @@ func (repo *QuestionSetRepository) GetQuestionSet(ctx context.Context, docID str
 
 	var qSet tna.QuestionSet
 	doc.DataTo(&qSet)
+	qSet.Id = doc.Ref.ID
+
 	return qSet, nil
 }
 
@@ -74,6 +104,8 @@ func (repo *QuestionSetRepository) GetQuestionSetByTechName(ctx context.Context,
 
 		var qSet tna.QuestionSet
 		err = doc.DataTo(&qSet)
+		qSet.Id = doc.Ref.ID
+
 		if err != nil {
 			return tna.QuestionSet{}, err
 		}
@@ -104,19 +136,23 @@ func (repo *QuestionSetRepository) GetAllQuestionSets(ctx context.Context, page 
 			return nil, err
 		}
 
-		var qs tna.QuestionSet
-		err = doc.DataTo(&qs)
+		var qSet tna.QuestionSet
+		err = doc.DataTo(&qSet)
+		qSet.Id = doc.Ref.ID
+
 		if err != nil {
 			return nil, err
 		}
 
-		qSets = append(qSets, qs)
+		qSets = append(qSets, qSet)
 	}
 	return qSets, nil
 }
 
 func (repo *QuestionSetRepository) UpdateQuestionSet(ctx context.Context, qSet tna.QuestionSet) (tna.QuestionSet, error) {
-	_, err := repo.client.Collection(QUESTION_SET_COLLECTION_NAME).Doc(qSet.Id).Set(ctx, qSet, firestore.MergeAll)
+	qSetMap := convertQuestionSetToMap(qSet)
+	log.Debugf("Updating question set: %v", qSet.Id)
+	_, err := repo.client.Collection(QUESTION_SET_COLLECTION_NAME).Doc(qSet.Id).Set(ctx, qSetMap, firestore.MergeAll)
 	return qSet, err
 }
 

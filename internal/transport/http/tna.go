@@ -144,6 +144,8 @@ func (h *QuestionSetHandler) GetAllQuestionSets(w http.ResponseWriter, r *http.R
 }
 
 func (h *QuestionSetHandler) UpdateQuestionSet(w http.ResponseWriter, r *http.Request) {
+	qSetId := chi.URLParam(r, "id")
+
 	var qSet tna.QuestionSet
 
 	if err := json.NewDecoder(r.Body).Decode(&qSet); err != nil {
@@ -151,6 +153,8 @@ func (h *QuestionSetHandler) UpdateQuestionSet(w http.ResponseWriter, r *http.Re
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
+	qSet.Id = qSetId
 
 	qSet, err := h.questionSetService.UpdateQuestionSet(r.Context(), qSet)
 
@@ -193,21 +197,5 @@ func (h *QuestionSetHandler) mapRoutes(router chi.Router) {
 			r.Put("/", h.UpdateQuestionSet)
 			r.Delete("/", h.DeleteQuestionSet)
 		})
-	})
-}
-
-func (h *CourseOutlineHandler) mapRoutes(router chi.Router) {
-	router.Route("/api/v1/course-outlines", func(r chi.Router) {
-		r.Post("/", h.PostCourseOutline)
-
-		r.Get("/", h.GetAllCourseOutlines)
-
-		r.Route("/{id}", func(r chi.Router) {
-			r.Get("/", h.GetCourseOutline)
-			r.Put("/", h.UpdateCourseOutline)
-			r.Delete("/", h.DeleteCourseOutline)
-		})
-
-		r.With(h.qSetQueryParamMiddleware).Get("/filter", h.GetCourseOutlinesByFilter)
 	})
 }

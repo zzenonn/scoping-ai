@@ -165,6 +165,8 @@ func (h *CourseOutlineHandler) GetAllCourseOutlines(w http.ResponseWriter, r *ht
 }
 
 func (h *CourseOutlineHandler) UpdateCourseOutline(w http.ResponseWriter, r *http.Request) {
+	courseOutlineId := chi.URLParam(r, "id")
+
 	var courseOutline outline.CourseOutline
 
 	if err := json.NewDecoder(r.Body).Decode(&courseOutline); err != nil {
@@ -172,6 +174,8 @@ func (h *CourseOutlineHandler) UpdateCourseOutline(w http.ResponseWriter, r *htt
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
+	courseOutline.Id = courseOutlineId
 
 	courseOutline, err := h.courseOutlineService.UpdateCourseOutline(r.Context(), courseOutline)
 

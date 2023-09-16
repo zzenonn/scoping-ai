@@ -65,18 +65,18 @@ func Run(projectName string) error {
 }
 
 func main() {
-	projectName := flag.String("project-name", "", "The name of the project (required)")
+	projectId := flag.String("project-id", "", "The id of the project (required)")
 	flag.Parse()
 
-	if *projectName == "" {
-		log.Debug("The 'project-name' flag is required")
+	if *projectId == "" {
+		log.Debug("The 'project-id' flag is required")
 		flag.Usage()
 		os.Exit(1)
 	}
 
-	log.Infof("the server is up with project: %s", *projectName)
+	log.Infof("the server is up with project: %s", *projectId)
 
-	if err := Run(*projectName); err != nil {
+	if err := Run(*projectId); err != nil {
 		log.Error(err)
 	}
 }

@@ -1,3 +1,4 @@
+# Stage 1: Builder
 FROM golang:1.21 AS builder
 
 RUN mkdir /app
@@ -8,7 +9,14 @@ ENV LOG_LEVEL="DEBUG"
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o app cmd/server/main.go
 
+# Stage 2: Production image
 FROM alpine:latest AS prod
 
+# Copying from builder stage
 COPY --from=builder /app .
-CMD ["./app"]
+
+# Argument for passing the project ID at build time
+ARG PROJECT_ID
+
+# Using the project ID as a flag for running the app
+CMD ["./app", "--project-id", "${PROJECT_ID}"]
