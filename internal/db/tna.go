@@ -58,6 +58,9 @@ func convertQuestionSetToMap(qSet tna.QuestionSet) map[string]interface{} {
 		if question.Text != nil {
 			questionMap["text"] = *question.Text
 		}
+		if question.Options != nil && len(question.Options) > 0 {
+			questionMap["options"] = question.Options
+		}
 		questions[i] = questionMap
 	}
 
