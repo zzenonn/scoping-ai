@@ -44,7 +44,7 @@ type Message struct {
 	Id          string     `json:"id" firestore:"id"`
 	UserId      *string    `json:"user_id,omitempty" firestore:"-"`
 	MessageText *string    `json:"message_text,omitempty" firestore:"message_text,omitempty"`
-	Answer      Answer     `json:"answer,omitempty" firestore:"answer,omitempty"`
+	Answer      *Answer    `json:"answer,omitempty" firestore:"answer,omitempty"`
 	CreatedAt   *time.Time `json:"created_at,omitempty" firestore:"created_at,omitempty"`
 	UpdatedAt   *time.Time `json:"updated_at,omitempty" firestore:"updated_at,omitempty"`
 }
