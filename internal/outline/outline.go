@@ -66,14 +66,14 @@ func (service *CourseOutlineService) PostCourseOutline(ctx context.Context, cour
 
 	courseOutline.Id = uuid.New().String()
 
-	courseOutline, err := service.courseOutlineRepository.PostCourseOutline(ctx, courseOutline)
+	postedCourseOutline, err := service.courseOutlineRepository.PostCourseOutline(ctx, courseOutline)
 
 	if err != nil {
 		log.Error("Failed to post course outline")
 		return CourseOutline{}, err
 	}
 
-	return courseOutline, nil
+	return postedCourseOutline, nil
 }
 
 func (service *CourseOutlineService) GetCourseOutline(ctx context.Context, id string) (CourseOutline, error) {
@@ -122,14 +122,14 @@ func (service *CourseOutlineService) GetAllCourseOutlines(ctx context.Context, p
 func (service *CourseOutlineService) UpdateCourseOutline(ctx context.Context, courseOutline CourseOutline) (CourseOutline, error) {
 	log.Debug("Updating course outline . . .")
 
-	courseOutline, err := service.courseOutlineRepository.UpdateCourseOutline(ctx, courseOutline)
+	updatedCourseOutline, err := service.courseOutlineRepository.UpdateCourseOutline(ctx, courseOutline)
 
 	if err != nil {
 		log.Error("Failed to update course outline")
 		return CourseOutline{}, err
 	}
 
-	return courseOutline, nil
+	return updatedCourseOutline, nil
 }
 
 func (service *CourseOutlineService) DeleteCourseOutline(ctx context.Context, id string) error {

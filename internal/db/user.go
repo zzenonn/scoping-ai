@@ -131,7 +131,7 @@ func (repo *UserRepository) UpdateUser(ctx context.Context, user tnauser.User) (
 		return tnauser.User{}, err
 	}
 
-	_, err = repo.client.Collection(USER_COLLECTION_NAME).Doc(user.ID).Set(ctx, userMap)
+	_, err = repo.client.Collection(USER_COLLECTION_NAME).Doc(user.ID).Set(ctx, userMap, firestore.MergeAll)
 	if err != nil {
 		return tnauser.User{}, err
 	}

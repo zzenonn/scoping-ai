@@ -161,7 +161,7 @@ func (repo *CourseOutlineRepository) GetAllCourseOutlines(ctx context.Context, p
 func (repo *CourseOutlineRepository) UpdateCourseOutline(ctx context.Context, cOutline outline.CourseOutline) (outline.CourseOutline, error) {
 	cOutlineMap := convertOutlineToMap(cOutline)
 
-	_, err := repo.client.Collection(COURSE_OUTLINE_COLLECTION_NAME).Doc(cOutline.Id).Set(ctx, cOutlineMap)
+	_, err := repo.client.Collection(COURSE_OUTLINE_COLLECTION_NAME).Doc(cOutline.Id).Set(ctx, cOutlineMap, firestore.MergeAll)
 	if err != nil {
 		return outline.CourseOutline{}, err
 	}
