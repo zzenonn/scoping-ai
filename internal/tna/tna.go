@@ -35,8 +35,9 @@ func init() {
 
 // Question representation
 type Question struct {
-	Category *string `json:"category,omitempty" firestore:"category,omitempty"`
-	Text     *string `json:"text,omitempty" firestore:"text,omitempty"`
+	Category *string  `json:"category,omitempty" firestore:"category,omitempty"`
+	Text     *string  `json:"text,omitempty" firestore:"text,omitempty"`
+	Options  []string `json:"options,omitempty" firestore:"options,omitempty"`
 }
 
 // Question set representation
