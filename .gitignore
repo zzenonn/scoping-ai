@@ -11,6 +11,7 @@ dist/
 bin/
 obj/
 build/
+app
 
 # Dependency directories
 vendor/

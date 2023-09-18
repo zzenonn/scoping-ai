@@ -9,6 +9,7 @@ import (
 
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
+	tnacommon "github.com/zzenonn/trainocate-tna/pkg/common"
 )
 
 func init() {
@@ -33,11 +34,17 @@ var (
 	ErrNotImplemented = errors.New("this function is not yet implemented")
 )
 
+type Answer struct {
+	Question tnacommon.Question `json:"question" firestore:"question"`
+	Answer   string             `json:"answer" firestore:"answer"`
+}
+
 // Message representation
 type Message struct {
 	Id          string     `json:"id" firestore:"id"`
 	UserId      *string    `json:"user_id,omitempty" firestore:"user_id,omitempty"`
 	MessageText *string    `json:"message_text,omitempty" firestore:"message_text,omitempty"`
+	Answers     []Answer   `json:"answers,omitempty" firestore:"answers,omitempty"`
 	CreatedAt   *time.Time `json:"created_at,omitempty" firestore:"created_at,omitempty"`
 	UpdatedAt   *time.Time `json:"updated_at,omitempty" firestore:"updated_at,omitempty"`
 }
