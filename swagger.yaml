@@ -190,6 +190,19 @@ paths:
 components:
   schemas:
 
+    Options:
+      type: "object"
+      properties:
+        multi_answer:
+          type: "boolean"
+          default: false
+          nullable: true
+        possible_options:
+          type: "array"
+          items:
+            type: "string"
+      required: []
+
     Question:
       type: "object"
       properties:
@@ -200,9 +213,7 @@ components:
           type: "string"
           nullable: true
         options:
-          type: "array"
-          items:
-            type: "string"
+          $ref: '#/components/schemas/Options'
       required: []
 
     QuestionSet:
@@ -219,6 +230,29 @@ components:
             $ref: '#/components/schemas/Question'
       required:
         - id
+
+    CourseOutline:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        technologyName:
+          type: "string"
+          nullable: true
+        courseCode:
+          type: "string"
+          nullable: true
+        courseName:
+          type: "string"
+          nullable: true
+        outline:
+          type: "string"
+          nullable: true
+      required:
+        - id
+
+In this updated version
+
 
     CourseOutline:
       type: "object"
