@@ -42,7 +42,7 @@ type Answer struct {
 // Message representation
 type Message struct {
 	Id          string     `json:"id" firestore:"id"`
-	UserId      *string    `json:"user_id,omitempty" firestore:"user_id,omitempty"`
+	UserId      *string    `json:"user_id,omitempty" firestore:"-"`
 	MessageText *string    `json:"message_text,omitempty" firestore:"message_text,omitempty"`
 	Answer      Answer     `json:"answer,omitempty" firestore:"answer,omitempty"`
 	CreatedAt   *time.Time `json:"created_at,omitempty" firestore:"created_at,omitempty"`
