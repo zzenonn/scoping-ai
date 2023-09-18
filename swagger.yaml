@@ -221,7 +221,7 @@ components:
       properties:
         id:
           type: "string"
-        technologyName:
+        technology_name:
           type: "string"
           nullable: true
         questions:
@@ -236,36 +236,13 @@ components:
       properties:
         id:
           type: "string"
-        technologyName:
+        technology_name:
           type: "string"
           nullable: true
-        courseCode:
+        course_code:
           type: "string"
           nullable: true
-        courseName:
-          type: "string"
-          nullable: true
-        outline:
-          type: "string"
-          nullable: true
-      required:
-        - id
-
-In this updated version
-
-
-    CourseOutline:
-      type: "object"
-      properties:
-        id:
-          type: "string"
-        technologyName:
-          type: "string"
-          nullable: true
-        courseCode:
-          type: "string"
-          nullable: true
-        courseName:
+        course_name:
           type: "string"
           nullable: true
         outline:
