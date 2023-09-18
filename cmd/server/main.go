@@ -12,6 +12,7 @@ import (
 	outline "github.com/zzenonn/trainocate-tna/internal/outline"
 	tna "github.com/zzenonn/trainocate-tna/internal/tna"
 	transportHttp "github.com/zzenonn/trainocate-tna/internal/transport/http"
+	tnauser "github.com/zzenonn/trainocate-tna/internal/user"
 )
 
 func init() {
@@ -56,10 +57,15 @@ func Run(projectName string) error {
 	cOutlineService := outline.NewCourseOutlineService(&cOutlineRepository)
 	cOutlineHandler := transportHttp.NewCourseOutlineHandler(cOutlineService)
 
+	userRepository := db.NewUserRepository(firestoreDb.Client)
+	userService := tnauser.NewUserService(&userRepository)
+	userHandler := transportHttp.NewUserHandler(userService)
+
 	httpHandler := transportHttp.NewMainHandler()
 
 	httpHandler.AddHandler(qSetHandler)
 	httpHandler.AddHandler(cOutlineHandler)
+	httpHandler.AddHandler(userHandler)
 
 	httpHandler.MapRoutes()
 

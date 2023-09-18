@@ -35,8 +35,8 @@ type UserRepository struct {
 	client *firestore.Client
 }
 
-func NewUserRepository(client *firestore.Client) QuestionSetRepository {
-	return QuestionSetRepository{
+func NewUserRepository(client *firestore.Client) UserRepository {
+	return UserRepository{
 		client: client,
 	}
 }
