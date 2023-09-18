@@ -43,17 +43,39 @@ func NewMessageRepository(client *firestore.Client) MessageRepository {
 }
 
 func convertMessageToMap(message tnamessage.Message) (map[string]interface{}, error) {
-	if message.UserId == nil || message.MessageText == nil {
+	if message.UserId == nil || (message.MessageText == nil && message.Answer.Question.Category == nil) {
 		return nil, ErrMissingRequiredFields
 	}
 
 	messageMap := make(map[string]interface{})
 
 	messageMap["id"] = message.Id
-	messageMap["message_text"] = *message.MessageText
+
+	if message.UserId != nil {
+		messageMap["user_id"] = *message.UserId
+	}
+
+	if message.MessageText != nil {
+		messageMap["message_text"] = *message.MessageText
+	}
+
+	if message.Answer.Question.Category != nil {
+		answerMap := map[string]interface{}{
+			"question": map[string]interface{}{
+				"category": message.Answer.Question.Category,
+				"text":     message.Answer.Question.Text,
+				"options": map[string]interface{}{
+					"multi_answer":     message.Answer.Question.Options.MultiAnswer,
+					"possible_options": message.Answer.Question.Options.PossibleOptions,
+				},
+			},
+			"answer": message.Answer.Answer,
+		}
+		messageMap["answers"] = answerMap
+	}
 
 	if message.CreatedAt != nil {
-		messageMap["created_at"] = message.CreatedAt.Format(time.RFC3339)
+		messageMap["created_at"] = message.CreatedAt.Format(time.RFC3339) // Will be overwritted by firestore.ServerTimestamp
 	}
 
 	if message.UpdatedAt != nil {
