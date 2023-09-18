@@ -87,7 +87,7 @@ func (repo *UserRepository) GetAllUsers(ctx context.Context, page int, pageSize 
 
 	offset := (page - 1) * pageSize
 
-	iter := repo.client.Collection(COURSE_OUTLINE_COLLECTION_NAME).OrderBy("email_address", firestore.Asc).Offset(offset).Limit(pageSize).Documents(ctx)
+	iter := repo.client.Collection(USER_COLLECTION_NAME).OrderBy("email_address", firestore.Asc).Offset(offset).Limit(pageSize).Documents(ctx)
 	var users []tnauser.User
 
 	for {
