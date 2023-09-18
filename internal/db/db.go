@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"errors"
 	"os"
 	"strings"
 
@@ -26,6 +27,8 @@ func init() {
 	}
 
 }
+
+var ErrMissingRequiredFields = errors.New("missing required fields")
 
 type FirestoreDb struct {
 	Client *firestore.Client
