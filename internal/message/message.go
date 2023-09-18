@@ -35,8 +35,8 @@ var (
 )
 
 type Answer struct {
-	Question tnacommon.Question `json:"question" firestore:"question"`
-	Answer   string             `json:"answer" firestore:"answer"`
+	Question tnacommon.Question `json:"question,omitempty" firestore:"question,omitempty"`
+	Answer   string             `json:"answer,omitempty" firestore:"answer,omitempty"`
 }
 
 // Message representation
@@ -44,7 +44,7 @@ type Message struct {
 	Id          string     `json:"id" firestore:"id"`
 	UserId      *string    `json:"user_id,omitempty" firestore:"user_id,omitempty"`
 	MessageText *string    `json:"message_text,omitempty" firestore:"message_text,omitempty"`
-	Answer      Answer     `json:"answers,omitempty" firestore:"answers,omitempty"`
+	Answer      Answer     `json:"answer,omitempty" firestore:"answers,omitempty"`
 	CreatedAt   *time.Time `json:"created_at,omitempty" firestore:"created_at,omitempty"`
 	UpdatedAt   *time.Time `json:"updated_at,omitempty" firestore:"updated_at,omitempty"`
 }
