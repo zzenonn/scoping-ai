@@ -93,20 +93,19 @@ func (h *CourseOutlineHandler) GetCourseOutline(w http.ResponseWriter, r *http.R
 }
 
 func (h *CourseOutlineHandler) GetCourseOutlinesByFilter(w http.ResponseWriter, r *http.Request) {
-	page, err := strconv.Atoi(r.URL.Query().Get("page"))
+	// Get page and pageSize from query parameters
+	pageStr := r.URL.Query().Get("page")
+	pageSizeStr := r.URL.Query().Get("pageSize")
 
-	if err != nil {
-		log.Error(err)
-		w.WriteHeader(http.StatusBadRequest)
-		return
+	// Convert them to integers with some default values
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page < 1 {
+		page = 1
 	}
 
-	pageSize, err := strconv.Atoi(r.URL.Query().Get("pageSize"))
-
-	if err != nil {
-		log.Error(err)
-		w.WriteHeader(http.StatusBadRequest)
-		return
+	pageSize, err := strconv.Atoi(pageSizeStr)
+	if err != nil || pageSize < 1 {
+		pageSize = 10
 	}
 
 	filterName := r.URL.Query().Get("filterName")

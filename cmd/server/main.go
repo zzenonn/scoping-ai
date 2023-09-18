@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/zzenonn/trainocate-tna/internal/db"
+	tnamessage "github.com/zzenonn/trainocate-tna/internal/message"
 	outline "github.com/zzenonn/trainocate-tna/internal/outline"
 	tna "github.com/zzenonn/trainocate-tna/internal/tna"
 	transportHttp "github.com/zzenonn/trainocate-tna/internal/transport/http"
@@ -61,11 +62,16 @@ func Run(projectName string) error {
 	userService := tnauser.NewUserService(&userRepository)
 	userHandler := transportHttp.NewUserHandler(userService)
 
+	messageRepository := db.NewMessageRepository(firestoreDb.Client)
+	messageService := tnamessage.NewMessageService(&messageRepository)
+	messageHandler := transportHttp.NewMessageHandler(messageService)
+
 	httpHandler := transportHttp.NewMainHandler()
 
 	httpHandler.AddHandler(qSetHandler)
 	httpHandler.AddHandler(cOutlineHandler)
 	httpHandler.AddHandler(userHandler)
+	httpHandler.AddHandler(messageHandler)
 
 	httpHandler.MapRoutes()
 
