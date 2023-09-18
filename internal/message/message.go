@@ -35,8 +35,9 @@ var (
 )
 
 type Answer struct {
-	Question *tnacommon.Question `json:"question,omitempty" firestore:"question,omitempty"`
-	Answer   *string             `json:"answer,omitempty" firestore:"answer,omitempty"`
+	Question       *tnacommon.Question `json:"question,omitempty" firestore:"question,omitempty"`
+	TechnologyName *string             `json:"technology_name,omitempty" firestore:"technology_name,omitempty"`
+	Answer         *string             `json:"answer,omitempty" firestore:"answer,omitempty"`
 }
 
 // Message representation

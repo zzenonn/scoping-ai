@@ -43,7 +43,7 @@ func NewMessageRepository(client *firestore.Client) MessageRepository {
 }
 
 func convertMessageToMap(message tnamessage.Message) (map[string]interface{}, error) {
-	if message.UserId == nil || (message.MessageText == nil && (message.Answer == nil || message.Answer.Question == nil || (message.Answer.Question.Category == nil && message.Answer.Question.Text == nil))) {
+	if message.UserId == nil || (message.MessageText == nil && (message.Answer == nil || message.Answer.Question == nil || (message.Answer.Question.Category == nil && message.Answer.Question.Text == nil) && message.Answer.TechnologyName == nil)) {
 		return nil, ErrMissingRequiredFields
 	}
 
@@ -59,31 +59,39 @@ func convertMessageToMap(message tnamessage.Message) (map[string]interface{}, er
 		messageMap["message_text"] = *message.MessageText
 	}
 
-	if message.Answer != nil && message.Answer.Question != nil {
-		questionMap := map[string]interface{}{
-			"options": map[string]interface{}{
-				"multi_answer":     message.Answer.Question.Options.MultiAnswer,
-				"possible_options": message.Answer.Question.Options.PossibleOptions,
-			},
+	if message.Answer != nil {
+		answerMap := map[string]interface{}{}
+
+		if message.Answer.TechnologyName != nil {
+			answerMap["technology_name"] = *message.Answer.TechnologyName
 		}
 
-		if message.Answer.Question.Category != nil {
-			questionMap["category"] = *message.Answer.Question.Category
-		}
+		if message.Answer.Question != nil {
+			questionMap := map[string]interface{}{}
 
-		if message.Answer.Question.Text != nil {
-			questionMap["text"] = *message.Answer.Question.Text
-		}
+			if message.Answer.Question.Options != nil {
+				questionMap["options"] = map[string]interface{}{
+					"multi_answer":     message.Answer.Question.Options.MultiAnswer,
+					"possible_options": message.Answer.Question.Options.PossibleOptions,
+				}
+			}
 
-		answerMap := map[string]interface{}{
-			"question": questionMap,
+			if message.Answer.Question.Category != nil {
+				questionMap["category"] = *message.Answer.Question.Category
+			}
+
+			if message.Answer.Question.Text != nil {
+				questionMap["text"] = *message.Answer.Question.Text
+			}
+
+			answerMap["question"] = questionMap
 		}
 
 		if message.Answer.Answer != nil {
 			answerMap["answer"] = *message.Answer.Answer
 		}
 
-		messageMap["answers"] = answerMap
+		messageMap["answer"] = answerMap
 	}
 
 	if message.CreatedAt != nil {

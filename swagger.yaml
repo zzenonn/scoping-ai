@@ -519,6 +519,8 @@ components:
       properties:
         question:
           $ref: '#/components/schemas/Question'
+        technology_name:
+          type: string
         answer:
           type: string
 

@@ -98,7 +98,7 @@ func (repo *QuestionSetRepository) GetQuestionSet(ctx context.Context, docID str
 }
 
 func (repo *QuestionSetRepository) GetQuestionSetByTechName(ctx context.Context, techName string) (tna.QuestionSet, error) {
-	iter := repo.client.Collection(QUESTION_SET_COLLECTION_NAME).Where("TechnologyName", "==", techName).Documents(ctx)
+	iter := repo.client.Collection(QUESTION_SET_COLLECTION_NAME).Where("technology_name", "==", techName).Documents(ctx)
 	for {
 		doc, err := iter.Next()
 		if err == iterator.Done {
