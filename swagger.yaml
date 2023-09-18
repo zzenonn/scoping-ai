@@ -1,0 +1,241 @@
+openapi: "3.0.0"
+info:
+  title: "TNA IT Training API"
+  version: "1.0.0"
+
+paths:
+
+  /api/v1/question-sets:
+    post:
+      summary: "Create a new question set"
+      operationId: "postQuestionSet"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionSet'
+      responses:
+        '200':
+          description: "Question set created"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionSet'
+    get:
+      summary: "Retrieve all question sets"
+      operationId: "getAllQuestionSets"
+      parameters:
+        - name: "name"
+          in: "query"
+          schema:
+            type: "string"
+          description: "Technology name to filter the question sets"
+      responses:
+        '200':
+          description: "List of question sets"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: '#/components/schemas/QuestionSet'
+
+  /api/v1/question-sets/{id}:
+    get:
+      summary: "Retrieve a question set by ID"
+      operationId: "getQuestionSet"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: "Question set data"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionSet'
+    put:
+      summary: "Update a question set by ID"
+      operationId: "updateQuestionSet"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionSet'
+      responses:
+        '200':
+          description: "Question set updated"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionSet'
+    delete:
+      summary: "Delete a question set by ID"
+      operationId: "deleteQuestionSet"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: "Question set deleted"
+
+  /api/v1/course-outlines:
+    post:
+      summary: "Create a new course outline"
+      operationId: "postCourseOutline"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseOutline'
+      responses:
+        '200':
+          description: "Course outline created"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseOutline'
+    get:
+      summary: "Retrieve all course outlines"
+      operationId: "getAllCourseOutlines"
+      parameters:
+        - name: "filterName"
+          in: "query"
+          schema:
+            type: "string"
+          description: "Name of the filter"
+        - name: "filterValue"
+          in: "query"
+          schema:
+            type: "string"
+          description: "Value of the filter"
+      responses:
+        '200':
+          description: "List of course outlines"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: '#/components/schemas/CourseOutline'
+
+  /api/v1/course-outlines/{id}:
+    get:
+      summary: "Retrieve a course outline by ID"
+      operationId: "getCourseOutline"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: "Course outline data"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseOutline'
+    put:
+      summary: "Update a course outline by ID"
+      operationId: "updateCourseOutline"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseOutline'
+      responses:
+        '200':
+          description: "Course outline updated"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseOutline'
+    delete:
+      summary: "Delete a course outline by ID"
+      operationId: "deleteCourseOutline"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: "Course outline deleted"
+
+
+components:
+  schemas:
+
+    Question:
+      type: "object"
+      properties:
+        category:
+          type: "string"
+          nullable: true
+        text:
+          type: "string"
+          nullable: true
+        options:
+          type: "array"
+          items:
+            type: "string"
+      required: []
+
+    QuestionSet:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        technologyName:
+          type: "string"
+          nullable: true
+        questions:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/Question'
+      required:
+        - id
+
+    CourseOutline:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        technologyName:
+          type: "string"
+          nullable: true
+        courseCode:
+          type: "string"
+          nullable: true
+        courseName:
+          type: "string"
+          nullable: true
+        outline:
+          type: "string"
+          nullable: true
+      required:
+        - id
