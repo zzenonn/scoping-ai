@@ -50,19 +50,19 @@ func Run(projectName string) error {
 	// 	return err
 	// }
 
-	qSetRepository := db.NewQuestionSetRepository(firestoreDb.Client)
+	qSetRepository := db.NewQuestionSetRepository(firestoreDb.Client, "question_sets")
 	qSetService := tna.NewQuestionService(&qSetRepository)
 	qSetHandler := transportHttp.NewQuestionSetHandler(qSetService)
 
-	cOutlineRepository := db.NewCourseOutlineRepository(firestoreDb.Client)
+	cOutlineRepository := db.NewCourseOutlineRepository(firestoreDb.Client, "course_outlines")
 	cOutlineService := outline.NewCourseOutlineService(&cOutlineRepository)
 	cOutlineHandler := transportHttp.NewCourseOutlineHandler(cOutlineService)
 
-	userRepository := db.NewUserRepository(firestoreDb.Client)
+	userRepository := db.NewUserRepository(firestoreDb.Client, "users")
 	userService := tnauser.NewUserService(&userRepository)
 	userHandler := transportHttp.NewUserHandler(userService)
 
-	messageRepository := db.NewMessageRepository(firestoreDb.Client)
+	messageRepository := db.NewMessageRepository(firestoreDb.Client, "messages")
 	messageService := tnamessage.NewMessageService(&messageRepository)
 	messageHandler := transportHttp.NewMessageHandler(messageService)
 

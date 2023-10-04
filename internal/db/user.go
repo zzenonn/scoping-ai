@@ -29,15 +29,15 @@ func init() {
 
 }
 
-const USER_COLLECTION_NAME = "users"
-
 type UserRepository struct {
-	client *firestore.Client
+	client         *firestore.Client
+	CollectionName string
 }
 
-func NewUserRepository(client *firestore.Client) UserRepository {
+func NewUserRepository(client *firestore.Client, collectionName string) UserRepository {
 	return UserRepository{
-		client: client,
+		client:         client,
+		CollectionName: collectionName,
 	}
 }
 
@@ -61,7 +61,7 @@ func convertUserToMap(user tnauser.User) (map[string]interface{}, error) {
 }
 
 func (repo *UserRepository) GetUser(ctx context.Context, id string) (tnauser.User, error) {
-	doc, err := repo.client.Collection(USER_COLLECTION_NAME).Doc(id).Get(ctx)
+	doc, err := repo.client.Collection(repo.CollectionName).Doc(id).Get(ctx)
 	if err != nil {
 		return tnauser.User{}, err
 	}
@@ -87,7 +87,7 @@ func (repo *UserRepository) GetAllUsers(ctx context.Context, page int, pageSize 
 
 	offset := (page - 1) * pageSize
 
-	iter := repo.client.Collection(USER_COLLECTION_NAME).OrderBy("email_address", firestore.Asc).Offset(offset).Limit(pageSize).Documents(ctx)
+	iter := repo.client.Collection(repo.CollectionName).OrderBy("email_address", firestore.Asc).Offset(offset).Limit(pageSize).Documents(ctx)
 	var users []tnauser.User
 
 	for {
@@ -117,7 +117,7 @@ func (repo *UserRepository) CreateUser(ctx context.Context, user tnauser.User) (
 		return tnauser.User{}, err
 	}
 
-	_, err = repo.client.Collection(USER_COLLECTION_NAME).Doc(user.ID).Set(ctx, userMap)
+	_, err = repo.client.Collection(repo.CollectionName).Doc(user.ID).Set(ctx, userMap)
 	if err != nil {
 		return tnauser.User{}, err
 	}
@@ -131,7 +131,7 @@ func (repo *UserRepository) UpdateUser(ctx context.Context, user tnauser.User) (
 		return tnauser.User{}, err
 	}
 
-	_, err = repo.client.Collection(USER_COLLECTION_NAME).Doc(user.ID).Set(ctx, userMap, firestore.MergeAll)
+	_, err = repo.client.Collection(repo.CollectionName).Doc(user.ID).Set(ctx, userMap, firestore.MergeAll)
 	if err != nil {
 		return tnauser.User{}, err
 	}
@@ -140,7 +140,7 @@ func (repo *UserRepository) UpdateUser(ctx context.Context, user tnauser.User) (
 }
 
 func (repo *UserRepository) DeleteUser(ctx context.Context, id string) error {
-	_, err := repo.client.Collection(USER_COLLECTION_NAME).Doc(id).Delete(ctx)
+	_, err := repo.client.Collection(repo.CollectionName).Doc(id).Delete(ctx)
 	if err != nil {
 		return err
 	}

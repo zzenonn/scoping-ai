@@ -30,15 +30,17 @@ func init() {
 
 }
 
-const MESSAGE_COLLECTION_NAME = "messages"
+// const repo.CollectionName = "messages"
 
 type MessageRepository struct {
-	client *firestore.Client
+	client         *firestore.Client
+	CollectionName string
 }
 
-func NewMessageRepository(client *firestore.Client) MessageRepository {
+func NewMessageRepository(client *firestore.Client, collectionName string) MessageRepository {
 	return MessageRepository{
-		client: client,
+		client:         client,
+		CollectionName: collectionName,
 	}
 }
 
@@ -120,7 +122,7 @@ func (repo *MessageRepository) PostMessage(ctx context.Context, message tnamessa
 
 	userId := message.UserId
 
-	_, err = repo.client.Collection(USER_COLLECTION_NAME).Doc(*userId).Collection(MESSAGE_COLLECTION_NAME).Doc(message.Id).Set(ctx, messageMap)
+	_, err = repo.client.Collection(repo.CollectionName).Doc(*userId).Collection(repo.CollectionName).Doc(message.Id).Set(ctx, messageMap)
 	if err != nil {
 		return tnamessage.Message{}, err
 	}
@@ -130,7 +132,7 @@ func (repo *MessageRepository) PostMessage(ctx context.Context, message tnamessa
 
 func (repo *MessageRepository) GetMessage(ctx context.Context, messageId string, userId string) (tnamessage.Message, error) {
 
-	doc, err := repo.client.Collection(USER_COLLECTION_NAME).Doc(userId).Collection(MESSAGE_COLLECTION_NAME).Doc(messageId).Get(ctx)
+	doc, err := repo.client.Collection(repo.CollectionName).Doc(userId).Collection(repo.CollectionName).Doc(messageId).Get(ctx)
 	if err != nil {
 		return tnamessage.Message{}, err
 	}
@@ -154,7 +156,7 @@ func (repo *MessageRepository) GetAllUserMessages(ctx context.Context, userId st
 
 	offset := (page - 1) * pageSize
 
-	iter := repo.client.Collection(USER_COLLECTION_NAME).Doc(userId).Collection(MESSAGE_COLLECTION_NAME).OrderBy("created_at", firestore.Asc).Offset(offset).Limit(pageSize).Documents(ctx)
+	iter := repo.client.Collection(repo.CollectionName).Doc(userId).Collection(repo.CollectionName).OrderBy("created_at", firestore.Asc).Offset(offset).Limit(pageSize).Documents(ctx)
 	var messages []tnamessage.Message
 
 	for {
@@ -184,7 +186,7 @@ func (repo *MessageRepository) UpdateMessage(ctx context.Context, message tnames
 		return tnamessage.Message{}, err
 	}
 
-	_, err = repo.client.Collection(MESSAGE_COLLECTION_NAME).Doc(message.Id).Set(ctx, messageMap, firestore.MergeAll)
+	_, err = repo.client.Collection(repo.CollectionName).Doc(message.Id).Set(ctx, messageMap, firestore.MergeAll)
 	if err != nil {
 		return tnamessage.Message{}, err
 	}
@@ -193,7 +195,7 @@ func (repo *MessageRepository) UpdateMessage(ctx context.Context, message tnames
 }
 
 func (repo *MessageRepository) DeleteMessage(ctx context.Context, messageId string, userId string) error {
-	_, err := repo.client.Collection(USER_COLLECTION_NAME).Doc(userId).Collection(MESSAGE_COLLECTION_NAME).Doc(messageId).Delete(ctx)
+	_, err := repo.client.Collection(repo.CollectionName).Doc(userId).Collection(repo.CollectionName).Doc(messageId).Delete(ctx)
 	if err != nil {
 		return err
 	}

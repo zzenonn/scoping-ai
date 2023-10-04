@@ -29,10 +29,9 @@ func init() {
 
 }
 
-const COURSE_OUTLINE_COLLECTION_NAME = "course_outlines"
-
 type CourseOutlineRepository struct {
-	client *firestore.Client
+	client         *firestore.Client
+	CollectionName string
 }
 
 func convertOutlineToMap(courseOutline outline.CourseOutline) map[string]interface{} {
@@ -44,16 +43,17 @@ func convertOutlineToMap(courseOutline outline.CourseOutline) map[string]interfa
 	}
 }
 
-func NewCourseOutlineRepository(client *firestore.Client) CourseOutlineRepository {
+func NewCourseOutlineRepository(client *firestore.Client, collectionName string) CourseOutlineRepository {
 	return CourseOutlineRepository{
-		client: client,
+		client:         client,
+		CollectionName: collectionName,
 	}
 }
 
 func (repo *CourseOutlineRepository) PostCourseOutline(ctx context.Context, cOutline outline.CourseOutline) (outline.CourseOutline, error) {
 	cOutlineMap := convertOutlineToMap(cOutline)
 
-	_, err := repo.client.Collection(COURSE_OUTLINE_COLLECTION_NAME).Doc(cOutline.Id).Set(ctx, cOutlineMap)
+	_, err := repo.client.Collection(repo.CollectionName).Doc(cOutline.Id).Set(ctx, cOutlineMap)
 	if err != nil {
 		return outline.CourseOutline{}, err
 	}
@@ -62,7 +62,7 @@ func (repo *CourseOutlineRepository) PostCourseOutline(ctx context.Context, cOut
 }
 
 func (repo *CourseOutlineRepository) GetCourseOutline(ctx context.Context, docID string) (outline.CourseOutline, error) {
-	doc, err := repo.client.Collection(COURSE_OUTLINE_COLLECTION_NAME).Doc(docID).Get(ctx)
+	doc, err := repo.client.Collection(repo.CollectionName).Doc(docID).Get(ctx)
 	if err != nil {
 		return outline.CourseOutline{}, err
 	}
@@ -93,7 +93,7 @@ func (repo *CourseOutlineRepository) GetCourseOutlinesByFilter(
 	offset := (page - 1) * pageSize
 
 	// Query broken down for readability
-	query := repo.client.Collection(COURSE_OUTLINE_COLLECTION_NAME)
+	query := repo.client.Collection(repo.CollectionName)
 	filteredQuery := query.Where(filterName, "==", filterValue)
 	orderedQuery := filteredQuery.OrderBy(filterName, firestore.Asc)
 	paginatedQuery := orderedQuery.Offset(offset).Limit(pageSize)
@@ -134,7 +134,7 @@ func (repo *CourseOutlineRepository) GetAllCourseOutlines(ctx context.Context, p
 
 	offset := (page - 1) * pageSize
 
-	iter := repo.client.Collection(COURSE_OUTLINE_COLLECTION_NAME).OrderBy("course_code", firestore.Asc).Offset(offset).Limit(pageSize).Documents(ctx)
+	iter := repo.client.Collection(repo.CollectionName).OrderBy("course_code", firestore.Asc).Offset(offset).Limit(pageSize).Documents(ctx)
 	var cOutlines []outline.CourseOutline
 
 	for {
@@ -161,7 +161,7 @@ func (repo *CourseOutlineRepository) GetAllCourseOutlines(ctx context.Context, p
 func (repo *CourseOutlineRepository) UpdateCourseOutline(ctx context.Context, cOutline outline.CourseOutline) (outline.CourseOutline, error) {
 	cOutlineMap := convertOutlineToMap(cOutline)
 
-	_, err := repo.client.Collection(COURSE_OUTLINE_COLLECTION_NAME).Doc(cOutline.Id).Set(ctx, cOutlineMap, firestore.MergeAll)
+	_, err := repo.client.Collection(repo.CollectionName).Doc(cOutline.Id).Set(ctx, cOutlineMap, firestore.MergeAll)
 	if err != nil {
 		return outline.CourseOutline{}, err
 	}
@@ -170,7 +170,7 @@ func (repo *CourseOutlineRepository) UpdateCourseOutline(ctx context.Context, cO
 }
 
 func (repo *CourseOutlineRepository) DeleteCourseOutline(ctx context.Context, docID string) error {
-	_, err := repo.client.Collection(COURSE_OUTLINE_COLLECTION_NAME).Doc(docID).Delete(ctx)
+	_, err := repo.client.Collection(repo.CollectionName).Doc(docID).Delete(ctx)
 	if err != nil {
 		return err
 	}
