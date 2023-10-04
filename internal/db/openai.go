@@ -59,7 +59,7 @@ func (repo *OpenAiRepository) createRequestPayload(openAiContext string, input s
 		"messages": []OpenAiMessage{
 			{
 				Role:    "system",
-				Content: "You are a helpful assistant.",
+				Content: openAiContext,
 			},
 			{
 				Role:    "user",
