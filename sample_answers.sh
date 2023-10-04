@@ -1,6 +1,8 @@
 #!/bin/bash
 
-curl -X POST "http://localhost:8080/api/v1/users/ 185bda41-aed7-427d-a7b7-16b99369e746/messages/answers" -H "Content-Type: application/json" -d '[
+curl --location 'http://localhost:8080/api/v1/users/185bda41-aed7-427d-a7b7-16b99369e746/messages/answers' \
+--header 'Content-Type: application/json' \
+--data '[
   {
     "answer": {
       "question": {
