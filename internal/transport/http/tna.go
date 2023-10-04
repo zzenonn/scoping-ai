@@ -93,8 +93,7 @@ func (h *QuestionSetHandler) GetQuestionSet(w http.ResponseWriter, r *http.Reque
 	}
 }
 
-func (h *QuestionSetHandler) GetQuestionSetByTechName(w http.ResponseWriter, r *http.Request) {
-	technologyName := r.URL.Query().Get("technology-name")
+func (h *QuestionSetHandler) GetQuestionSetByTechName(w http.ResponseWriter, r *http.Request, technologyName string) {
 
 	qSet, err := h.questionSetService.GetQuestionSetByTechName(r.Context(), technologyName)
 

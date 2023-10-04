@@ -6,7 +6,7 @@ func (h *QuestionSetHandler) qSetQueryParamMiddleware(next http.Handler) http.Ha
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		name := r.URL.Query().Get("name")
 		if name != "" {
-			h.GetQuestionSetByTechName(w, r)
+			h.GetQuestionSetByTechName(w, r, name)
 			return
 		}
 		next.ServeHTTP(w, r)
@@ -18,7 +18,7 @@ func (h *CourseOutlineHandler) outlineQueryParamMiddleware(next http.Handler) ht
 		filterName := r.URL.Query().Get("filterName")
 		filterValue := r.URL.Query().Get("filterValue")
 		if filterName != "" && filterValue != "" {
-			h.GetCourseOutlinesByFilter(w, r)
+			h.GetCourseOutlinesByFilter(w, r, filterName, filterValue)
 			return
 		}
 		next.ServeHTTP(w, r)

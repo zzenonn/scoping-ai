@@ -2,6 +2,7 @@ package messages
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"os"
 	"strings"
@@ -50,6 +51,32 @@ type Message struct {
 	UpdatedAt   *time.Time `json:"updated_at,omitempty" firestore:"updated_at,omitempty"`
 }
 
+type ChatCompletion struct {
+	Id      string   `json:"id"`
+	Object  string   `json:"object"`
+	Created int64    `json:"created"`
+	Model   string   `json:"model"`
+	Choices []Choice `json:"choices"`
+	Usage   Usage    `json:"usage"`
+}
+
+type Choice struct {
+	Index        int           `json:"index"`
+	Message      OpenAiMessage `json:"message"`
+	FinishReason string        `json:"finish_reason"`
+}
+
+type OpenAiMessage struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+}
+
+type Usage struct {
+	PromptTokens     int `json:"prompt_tokens"`
+	CompletionTokens int `json:"completion_tokens"`
+	TotalTokens      int `json:"total_tokens"`
+}
+
 // Implements the message repository interface design pattern
 type MessageRepository interface {
 	GetMessage(ctx context.Context, messageId string, userId string) (Message, error)
@@ -59,8 +86,13 @@ type MessageRepository interface {
 	DeleteMessage(ctx context.Context, messageId string, userId string) error
 }
 
+type OpenAiRepository interface {
+	PostPrompt(ctx context.Context, aiContext string, prompt string) (ChatCompletion, error)
+}
+
 type MessageService struct {
 	messageRepository MessageRepository
+	openAiRepository  OpenAiRepository
 }
 
 func NewMessageService(messageRepository MessageRepository) *MessageService {
@@ -83,13 +115,86 @@ func (service *MessageService) PostMessage(ctx context.Context, message Message)
 
 	return postedMessage, nil
 }
+
+func (service *MessageService) promptOpenAi(postedMessages []Message) (Message, error) {
+	log.Debug("Prompting the Open AI API . . .")
+
+	var promptBuilder strings.Builder
+
+	aiContext := `You are a technical expert on AWS training. A prospective student will be answering some scoping questions. 
+				  Recommend the most suitable official AWS Instructor Led Training based on their answers.`
+
+	for _, msg := range postedMessages {
+		if msg.Answer != nil && msg.Answer.Question != nil && msg.Answer.Answer != nil {
+			promptBuilder.WriteString("Question: ")
+			promptBuilder.WriteString(*msg.Answer.Question.Text)
+			promptBuilder.WriteString("\nAnswer: ")
+			promptBuilder.WriteString(*msg.Answer.Answer)
+			promptBuilder.WriteString("\n\n")
+		} else {
+			log.Error("Message with ID ", msg.Id, " lacks either a question or an answer or both.")
+		}
+	}
+
+	prompt := promptBuilder.String()
+
+	chatCompletion, err := service.openAiRepository.PostPrompt(context.Background(), aiContext, prompt)
+
+	if err != nil {
+		log.Error("Failed to prompt Open AI API")
+		return Message{}, err
+	}
+
+	var message Message
+
+	message.Id = chatCompletion.Id
+
+	jsonData, err := json.Marshal(chatCompletion)
+	if err != nil {
+		log.Error("Error marshaling struct")
+		return Message{}, err
+	}
+
+	jsonString := string(jsonData)
+
+	message.MessageText = &jsonString
+
+	completionMessage, err := service.PostMessage(context.Background(), message)
+
+	return completionMessage, nil
+}
+
+func (service *MessageService) PostAnswers(ctx context.Context, messages []Message) ([]Message, error) {
+	log.Debug("Posting multiple answers...")
+
+	postedMessages := make([]Message, 0, len(messages))
+
+	for _, message := range messages {
+		message.Id = uuid.New().String()
+		postedMessage, err := service.PostMessage(ctx, message)
+		if err != nil {
+			log.Errorf("Failed to post message with ID %s. Error: %v", message.Id, err)
+
+			continue
+		}
+		postedMessages = append(postedMessages, postedMessage)
+	}
+
+	defer func() {
+		go service.promptOpenAi(postedMessages)
+	}()
+
+	log.Debug("Completed posting messages.")
+	return postedMessages, nil
+}
+
 func (service *MessageService) GetMessage(ctx context.Context, messageId string, userId string) (Message, error) {
 	log.Debugf("Retreiving message Id: %s for user %s . . .", messageId, userId)
 
 	message, err := service.messageRepository.GetMessage(ctx, messageId, userId)
 
 	if err != nil {
-		log.Errorf("Failed to retrieve message %s for user", messageId, userId)
+		log.Errorf("Failed to retrieve message %s for user %s", messageId, userId)
 		return Message{}, err
 	}
 

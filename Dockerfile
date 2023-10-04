@@ -15,8 +15,5 @@ FROM alpine:latest AS prod
 # Copying from builder stage
 COPY --from=builder /app .
 
-# Argument for passing the project ID at build time
-ARG PROJECT_ID
-
 # Using the project ID as a flag for running the app
-CMD ["./app", "--project-id", "${PROJECT_ID}"]
+CMD ["./app", "--project-id", "genai-tna"]

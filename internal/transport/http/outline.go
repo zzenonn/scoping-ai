@@ -92,7 +92,7 @@ func (h *CourseOutlineHandler) GetCourseOutline(w http.ResponseWriter, r *http.R
 	}
 }
 
-func (h *CourseOutlineHandler) GetCourseOutlinesByFilter(w http.ResponseWriter, r *http.Request) {
+func (h *CourseOutlineHandler) GetCourseOutlinesByFilter(w http.ResponseWriter, r *http.Request, filterName string, filterValue string) {
 	// Get page and pageSize from query parameters
 	pageStr := r.URL.Query().Get("page")
 	pageSizeStr := r.URL.Query().Get("pageSize")
@@ -107,9 +107,6 @@ func (h *CourseOutlineHandler) GetCourseOutlinesByFilter(w http.ResponseWriter, 
 	if err != nil || pageSize < 1 {
 		pageSize = 10
 	}
-
-	filterName := r.URL.Query().Get("filterName")
-	filterValue := r.URL.Query().Get("filterValue")
 
 	courseOutlines, err := h.courseOutlineService.GetCourseOutlinesByFilter(r.Context(), page, pageSize, filterName, filterValue)
 
