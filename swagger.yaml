@@ -357,6 +357,11 @@ paths:
   /api/v1/users/{userId}/messages/answers:
     post:
       summary: Post an array of messages with question/answer pairs
+      description: |
+        This endpoint is used to post an array of messages with question/answer pairs.
+        The endpoint will create a new message for each question/answer pair and post them
+        to the open AI API. The initial response from this API will be a placeholder message.
+        The message will be updated with the response from the open AI API when it is available.
       parameters:
         - name: userId
           in: path

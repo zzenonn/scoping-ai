@@ -57,8 +57,6 @@ func getSecret(secretName string) (string, error) {
 		return "", err
 	}
 
-	log.Debug(result.Payload.Data)
-
 	return string(result.Payload.Data), nil
 }
 

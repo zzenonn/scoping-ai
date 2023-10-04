@@ -5,7 +5,7 @@ RUN mkdir /app
 COPY . /app
 WORKDIR /app
 
-ENV LOG_LEVEL="DEBUG"
+ENV LOG_LEVEL="INFO"
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o app cmd/server/main.go
 
