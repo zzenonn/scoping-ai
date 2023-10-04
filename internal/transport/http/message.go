@@ -81,19 +81,19 @@ func (h *MessageHandler) PostMessage(w http.ResponseWriter, r *http.Request) {
 func (h *MessageHandler) PostAnswers(w http.ResponseWriter, r *http.Request) {
 	userId := chi.URLParam(r, "userId")
 
-	// Change to an array of messages
+	// Declare a slice for messages
 	var messages []tnamessage.Message
-
-	// Set userId for all messages
-	for i := range messages {
-		messages[i].UserId = &userId
-	}
 
 	// Decode the request body into the messages slice
 	if err := json.NewDecoder(r.Body).Decode(&messages); err != nil {
 		log.Error(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
+	}
+
+	// Set userId for all messages after decoding
+	for i := range messages {
+		messages[i].UserId = &userId
 	}
 
 	responseMessage, err := h.messageService.PostAnswers(r.Context(), messages)
@@ -226,7 +226,7 @@ func (h *MessageHandler) DeleteMessage(w http.ResponseWriter, r *http.Request) {
 func (h *MessageHandler) mapRoutes(router chi.Router) {
 	router.Route("/api/v1/users/{userId}/messages", func(r chi.Router) {
 		r.Post("/", h.PostMessage)
-		r.Post("/answers", h.PostMessage)
+		r.Post("/answers", h.PostAnswers)
 		r.Get("/", h.GetAllUserMessages)
 
 		r.Route("/{messageId}", func(r chi.Router) {

@@ -149,6 +149,7 @@ func (service *MessageService) promptOpenAi(postedMessages []Message, responseMe
 	var message Message
 
 	message.Id = responseMessageId
+	message.UserId = postedMessages[0].UserId
 
 	jsonData, err := json.Marshal(chatCompletion)
 	if err != nil {

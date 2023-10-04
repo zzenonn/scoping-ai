@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"io"
 	"net/http"
 	"os"
 	"strings"
@@ -98,7 +99,19 @@ func (repo *OpenAiRepository) PostPrompt(ctx context.Context, aiContext string, 
 	defer resp.Body.Close()
 
 	var chatCompletion tnamessage.ChatCompletion
-	err = json.NewDecoder(resp.Body).Decode(&chatCompletion)
+
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Errorf("Failed to read response body: %v", err)
+		return tnamessage.ChatCompletion{}, err
+	}
+
+	// Logging the response body
+	bodyString := string(bodyBytes)
+	log.Debug(bodyString)
+
+	// Decoding the body bytes into chatCompletion
+	err = json.Unmarshal(bodyBytes, &chatCompletion)
 	if err != nil {
 		log.Errorf("Failed to unmarshal response body: %v", err)
 		return tnamessage.ChatCompletion{}, err

@@ -92,7 +92,7 @@ func Run(projectName string) error {
 	userHandler := transportHttp.NewUserHandler(userService)
 
 	openAiRepository := db.NewOpenAiRepository(openAPIKey, "https://api.openai.com/v1/chat/completions", "gpt-4", 1.0)
-	messageRepository := db.NewMessageRepository(firestoreDb.Client, "messages")
+	messageRepository := db.NewMessageRepository(firestoreDb.Client, "messages", "users")
 	messageService := tnamessage.NewMessageService(&messageRepository, &openAiRepository)
 	messageHandler := transportHttp.NewMessageHandler(messageService)
 
