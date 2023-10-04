@@ -95,9 +95,10 @@ type MessageService struct {
 	openAiRepository  OpenAiRepository
 }
 
-func NewMessageService(messageRepository MessageRepository) *MessageService {
+func NewMessageService(messageRepository MessageRepository, openAiRepository OpenAiRepository) *MessageService {
 	return &MessageService{
 		messageRepository: messageRepository,
+		openAiRepository:  openAiRepository,
 	}
 }
 
