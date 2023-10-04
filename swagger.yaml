@@ -354,6 +354,24 @@ paths:
         '500':
           description: Internal server error
 
+  /api/v1/users/{userId}/messages/answers:
+    post:
+      summary: Post an array of messages with question/answer pairs
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Message'
+
   /api/v1/users/{userId}/messages/{messageId}:
     get:
       summary: Get a specific message
