@@ -116,7 +116,7 @@ func (service *MessageService) PostMessage(ctx context.Context, message Message)
 	return postedMessage, nil
 }
 
-func (service *MessageService) promptOpenAi(postedMessages []Message) (Message, error) {
+func (service *MessageService) promptOpenAi(postedMessages []Message, responseMessageId string) (Message, error) {
 	log.Debug("Prompting the Open AI API . . .")
 
 	var promptBuilder strings.Builder
@@ -147,7 +147,7 @@ func (service *MessageService) promptOpenAi(postedMessages []Message) (Message, 
 
 	var message Message
 
-	message.Id = chatCompletion.Id
+	message.Id = responseMessageId
 
 	jsonData, err := json.Marshal(chatCompletion)
 	if err != nil {
@@ -159,12 +159,12 @@ func (service *MessageService) promptOpenAi(postedMessages []Message) (Message, 
 
 	message.MessageText = &jsonString
 
-	completionMessage, err := service.PostMessage(context.Background(), message)
+	completionMessage, err := service.UpdateMessage(context.Background(), message)
 
 	return completionMessage, nil
 }
 
-func (service *MessageService) PostAnswers(ctx context.Context, messages []Message) ([]Message, error) {
+func (service *MessageService) PostAnswers(ctx context.Context, messages []Message) (Message, error) {
 	log.Debug("Posting multiple answers...")
 
 	postedMessages := make([]Message, 0, len(messages))
@@ -180,12 +180,22 @@ func (service *MessageService) PostAnswers(ctx context.Context, messages []Messa
 		postedMessages = append(postedMessages, postedMessage)
 	}
 
+	messagePending := "Thank you for your message. Please wait for the AI Engine to generate a response."
+
+	pendingMessage := Message{
+		Id:          uuid.New().String(),
+		UserId:      postedMessages[0].UserId,
+		MessageText: &messagePending,
+	}
+
+	service.PostMessage(ctx, pendingMessage)
+
 	defer func() {
-		go service.promptOpenAi(postedMessages)
+		go service.promptOpenAi(postedMessages, pendingMessage.Id)
 	}()
 
 	log.Debug("Completed posting messages.")
-	return postedMessages, nil
+	return pendingMessage, nil
 }
 
 func (service *MessageService) GetMessage(ctx context.Context, messageId string, userId string) (Message, error) {

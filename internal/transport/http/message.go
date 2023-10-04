@@ -33,6 +33,7 @@ func init() {
 
 type MessageServiceInterface interface {
 	PostMessage(ctx context.Context, message tnamessage.Message) (tnamessage.Message, error)
+	PostAnswers(ctx context.Context, messages []tnamessage.Message) (tnamessage.Message, error)
 	GetMessage(ctx context.Context, messageId string, userId string) (tnamessage.Message, error)
 	GetAllUserMessages(ctx context.Context, userId string, page int, pageSize int) ([]tnamessage.Message, error)
 	UpdateMessage(ctx context.Context, message tnamessage.Message) (tnamessage.Message, error)
@@ -71,6 +72,40 @@ func (h *MessageHandler) PostMessage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.NewEncoder(w).Encode(message); err != nil {
+		log.Error(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+}
+
+func (h *MessageHandler) PostAnswers(w http.ResponseWriter, r *http.Request) {
+	userId := chi.URLParam(r, "userId")
+
+	// Change to an array of messages
+	var messages []tnamessage.Message
+
+	// Set userId for all messages
+	for i := range messages {
+		messages[i].UserId = &userId
+	}
+
+	// Decode the request body into the messages slice
+	if err := json.NewDecoder(r.Body).Decode(&messages); err != nil {
+		log.Error(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	responseMessage, err := h.messageService.PostAnswers(r.Context(), messages)
+
+	if err != nil {
+		log.Error(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// Encode and return the processed messages
+	if err := json.NewEncoder(w).Encode(responseMessage); err != nil {
 		log.Error(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -191,6 +226,7 @@ func (h *MessageHandler) DeleteMessage(w http.ResponseWriter, r *http.Request) {
 func (h *MessageHandler) mapRoutes(router chi.Router) {
 	router.Route("/api/v1/users/{userId}/messages", func(r chi.Router) {
 		r.Post("/", h.PostMessage)
+		r.Post("/answers", h.PostMessage)
 		r.Get("/", h.GetAllUserMessages)
 
 		r.Route("/{messageId}", func(r chi.Router) {
