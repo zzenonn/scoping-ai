@@ -1,6 +1,6 @@
 #!/bin/bash
 
-curl --location 'http://localhost:8080/api/v1/users/185bda41-aed7-427d-a7b7-16b99369e746/messages/answers' \
+curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" -H "Origin: https://example-origin.com"  --location 'http://localhost:8080/api/v1/users/185bda41-aed7-427d-a7b7-16b99369e746/messages/answers' \
 --header 'Content-Type: application/json' \
 --data '[
   {

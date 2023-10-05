@@ -11,7 +11,6 @@ import (
 
 	logger "github.com/chi-middleware/logrus-logger"
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/cors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -52,19 +51,9 @@ func NewMainHandler() *MainHandler {
 
 	h.Router = chi.NewRouter()
 
-	h.Router.Use(cors.Handler(cors.Options{
-		AllowedOrigins: []string{"*"},
-		AllowedMethods: []string{
-			http.MethodHead,
-			http.MethodGet,
-			http.MethodPost,
-			http.MethodPut,
-			http.MethodPatch,
-			http.MethodDelete,
-		},
-		AllowedHeaders:   []string{"*"},
-		AllowCredentials: false,
-	}))
+	h.Router.Use()
+
+	// h.Router.Use(CorsMiddleware)
 
 	h.Router.Use(logger.Logger("router", log.New()))
 	// h.Router.Use(JSONMiddleware)
@@ -84,6 +73,24 @@ func (h *MainHandler) AddHandler(handler Handler) {
 }
 
 func (h *MainHandler) MapRoutes() {
+	// h.Router.Options("/", func(w http.ResponseWriter, r *http.Request) {})
+
+	// corsMiddleware := cors.Handler(cors.Options{
+	// 	AllowedOrigins: []string{"*"},
+	// 	AllowedMethods: []string{
+	// 		http.MethodHead,
+	// 		http.MethodGet,
+	// 		http.MethodPost,
+	// 		http.MethodPut,
+	// 		http.MethodPatch,
+	// 		http.MethodDelete,
+	// 		http.MethodOptions,
+	// 	},
+	// 	AllowedHeaders:   []string{"*"},
+	// 	AllowCredentials: true,
+	// })
+
+	h.Router.Use(CorsMiddleware)
 	h.Router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Hello world")
 	})

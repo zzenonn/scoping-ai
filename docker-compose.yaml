@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: "genai-api"
+    volumes:
+      - ~/.config/gcloud:/root/.config/gcloud
+    ports:
+      - "8080:8080"
+    networks:
+      - fullstack
+
+networks:
+  fullstack:
+    driver: bridge

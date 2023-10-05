@@ -1,0 +1,25 @@
+version: '3'
+
+tasks:
+  build:
+    cmds:
+      - CGO_ENABLED=0 GOOS=linux go build -v -o bin/app cmd/server/main.go
+  
+  test:
+    cmds:
+      - go test -v ./...
+
+  lint:
+    cmds:
+      - golangci-lint run
+
+  run:
+    cmds:
+      - docker-compose up --build
+
+  deploy:
+    cmds:
+      - docker build --build-arg PROJECT_ID=genai-tna -t trainocate-tna:latest .
+      - docker tag trainocate-tna:latest gcr.io/genai-tna/trainocate-tna:latest
+      - docker push gcr.io/genai-tna/trainocate-tna:latest
+      - gcloud run deploy genai-api --image gcr.io/genai-tna/trainocate-tna:latest --project genai-tna --port 8080 --service-account backendapi@genai-tna.iam.gserviceaccount.com --region asia-southeast1
