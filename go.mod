@@ -7,7 +7,6 @@ require (
 	cloud.google.com/go/secretmanager v1.10.0
 	github.com/chi-middleware/logrus-logger v0.2.0
 	github.com/go-chi/chi/v5 v5.0.10
-	github.com/go-chi/cors v1.2.1
 	github.com/google/uuid v1.3.0
 	github.com/sirupsen/logrus v1.9.3
 	google.golang.org/api v0.126.0
