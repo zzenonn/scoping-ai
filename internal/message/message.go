@@ -193,14 +193,19 @@ func (service *MessageService) PostAnswers(ctx context.Context, messages []Messa
 		MessageText: &messagePending,
 	}
 
-	service.PostMessage(ctx, pendingMessage)
+	postedPendingMessage, err := service.PostMessage(ctx, pendingMessage)
+
+	if err != nil {
+		log.Errorf("Failed to post pending message with ID %s. Error: %v", pendingMessage.Id, err)
+		return Message{}, err
+	}
 
 	defer func() {
-		go service.promptOpenAi(postedMessages, pendingMessage.Id)
+		go service.promptOpenAi(postedMessages, postedPendingMessage.Id)
 	}()
 
 	log.Debug("Completed posting messages.")
-	return pendingMessage, nil
+	return postedPendingMessage, nil
 }
 
 func (service *MessageService) GetMessage(ctx context.Context, messageId string, userId string) (Message, error) {
