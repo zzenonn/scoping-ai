@@ -22,4 +22,4 @@ tasks:
       - docker build --build-arg PROJECT_ID=genai-tna -t trainocate-tna:latest .
       - docker tag trainocate-tna:latest gcr.io/genai-tna/trainocate-tna:latest
       - docker push gcr.io/genai-tna/trainocate-tna:latest
-      - gcloud run deploy genai-api --image gcr.io/genai-tna/trainocate-tna:latest --project genai-tna --port 8080 --service-account backendapi@genai-tna.iam.gserviceaccount.com --region asia-southeast1
+      - gcloud run deploy genai-api --image gcr.io/genai-tna/trainocate-tna:latest --project genai-tna --port 8080 --service-account backendapi@genai-tna.iam.gserviceaccount.com --region asia-southeast1 --allow-unauthenticated
