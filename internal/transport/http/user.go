@@ -180,13 +180,15 @@ func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 func (h *UserHandler) mapRoutes(router chi.Router) {
 	router.Route("/api/v1/users", func(r chi.Router) {
-		r.Post("/", h.PostUser)
-		r.Get("/", h.GetAllUsers)
+		r.Use(JwtMiddleware)
+
+		r.Method("POST", "/", http.HandlerFunc(h.PostUser))
+		r.Method("GET", "/", http.HandlerFunc(h.GetAllUsers)) // JwtMiddleware(http.HandlerFunc(h.GetAllUsers)))
 
 		r.Route("/{id}", func(r chi.Router) {
-			r.Get("/", h.GetUser)
-			r.Put("/", h.UpdateUser)
-			r.Delete("/", h.DeleteUser)
+			r.Method("GET", "/", http.HandlerFunc(h.GetUser))
+			r.Method("PUT", "/", http.HandlerFunc(h.UpdateUser))
+			r.Method("DELETE", "/", http.HandlerFunc(h.DeleteUser))
 		})
 	})
 }

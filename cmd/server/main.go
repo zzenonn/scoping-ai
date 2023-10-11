@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 
+	firebase "firebase.google.com/go"
 	log "github.com/sirupsen/logrus"
 
 	"strings"
@@ -71,6 +72,15 @@ func Run(projectName string) error {
 		return err
 	}
 
+	// Create Firebase app for JWT verification
+
+	cfg := &firebase.Config{ProjectID: projectName}
+
+	firebaseApp, err := firebase.NewApp(context.Background(), cfg)
+	if err != nil {
+		log.Fatalf("Error initializing Firebase App: %v", err)
+	}
+
 	openAIKeySecretName := fmt.Sprintf("projects/%s/secrets/OpenAIAPIKey/versions/latest", projectName)
 
 	openAPIKey, err := getSecret(openAIKeySecretName)
@@ -96,7 +106,7 @@ func Run(projectName string) error {
 	messageService := tnamessage.NewMessageService(&messageRepository, &openAiRepository)
 	messageHandler := transportHttp.NewMessageHandler(messageService)
 
-	httpHandler := transportHttp.NewMainHandler()
+	httpHandler := transportHttp.NewMainHandler(firebaseApp)
 
 	httpHandler.AddHandler(qSetHandler)
 	httpHandler.AddHandler(cOutlineHandler)

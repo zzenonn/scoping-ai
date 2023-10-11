@@ -1,6 +1,11 @@
 package http
 
-import "net/http"
+import (
+	"net/http"
+	"strings"
+
+	log "github.com/sirupsen/logrus"
+)
 
 func (h *QuestionSetHandler) qSetQueryParamMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -39,5 +44,32 @@ func CorsMiddleware(next http.Handler) http.Handler {
 		}
 
 		next.ServeHTTP(w, r)
+	})
+}
+
+func JwtMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		authHeader := r.Header["Authorization"]
+		if authHeader == nil {
+			log.Error("invalid authorization header")
+			http.Error(w, "not authorized", http.StatusUnauthorized)
+			return
+		}
+
+		authHeaderParts := strings.Split(authHeader[0], " ")
+
+		if len(authHeaderParts) != 2 || strings.ToLower(authHeaderParts[0]) != "bearer" {
+			log.Error("invalid authorization header")
+			http.Error(w, "not authorized", http.StatusUnauthorized)
+			return
+		}
+
+		token := authHeaderParts[1]
+		if VerifyFirebaseToken(r.Context(), token) {
+			next.ServeHTTP(w, r) // this will call the next handler in the chain
+		} else {
+			log.Error("unauthorized authorization header")
+			http.Error(w, "not authorized", http.StatusUnauthorized)
+		}
 	})
 }

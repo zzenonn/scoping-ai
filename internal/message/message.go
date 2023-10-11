@@ -123,10 +123,11 @@ func (service *MessageService) promptOpenAi(postedMessages []Message, responseMe
 	var promptBuilder strings.Builder
 
 	aiContext := `You are a technical expert on AWS training. A prospective student will be answering some scoping questions. 
-				  Recommend the most suitable official AWS Instructor Led Training based on their answers. You can only recommend one of
-				  the following official AWS courses Architecting on AWS, Developing on AWS, Cloud Operations (SysOps) on AWS, DevOps Engineering on AWS,
-				  The Machine Learning Pipeline on AWS, Advanced Architecting on AWS, Security Engineering on AWS, Data Analytics (Big Data) on AWS.
-				  Do NOT recommend any other courses. If they have any questions, direct them to ph-inquiries@trainocate.com`
+				  Recommend the most suitable official AWS Instructor Led Training based on their rpowershell "$m=(Get-Volume -Fianswers. You can only recommend one of
+				  the following official AWS courses Technical Essentials on AWS Architecting on AWS, Developing on AWS, Cloud Operations (SysOps) on AWS, 
+				  DevOps Engineering on AWS, The Machine Learning Pipeline on AWS, Advanced Architecting on AWS, Security Engineering on AWS, 
+				  Data Analytics (Big Data) on AWS. Do NOT recommend any other courses. You may recommend a combination of courses.
+				  If they have any questions, direct them to ph-inquiries@trainocate.com`
 
 	for _, msg := range postedMessages {
 		if msg.Answer != nil && msg.Answer.Question != nil && msg.Answer.Answer != nil {

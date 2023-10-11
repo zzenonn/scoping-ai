@@ -187,6 +187,9 @@ func (h *QuestionSetHandler) DeleteQuestionSet(w http.ResponseWriter, r *http.Re
 
 func (h *QuestionSetHandler) mapRoutes(router chi.Router) {
 	router.Route("/api/v1/question-sets", func(r chi.Router) {
+
+		r.Use(JwtMiddleware)
+
 		r.Post("/", h.PostQuestionSet)
 
 		r.With(h.qSetQueryParamMiddleware).Get("/", h.GetAllQuestionSets)

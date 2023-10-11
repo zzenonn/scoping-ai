@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	firebase "firebase.google.com/go"
 	logger "github.com/chi-middleware/logrus-logger"
 	"github.com/go-chi/chi/v5"
 	log "github.com/sirupsen/logrus"
@@ -38,13 +39,11 @@ func init() {
 		log.SetLevel(log.WarnLevel)
 	default:
 		log.SetLevel(log.ErrorLevel)
-	} // User Routes
-
-	// Comment Routes
+	}
 
 }
 
-func NewMainHandler() *MainHandler {
+func NewMainHandler(app *firebase.App) *MainHandler {
 	h := &MainHandler{
 		Handlers: []Handler{},
 	}
@@ -63,6 +62,8 @@ func NewMainHandler() *MainHandler {
 		Addr:    "0.0.0.0:8080",
 		Handler: h.Router,
 	}
+
+	firebaseApp = app
 
 	return h
 }
@@ -92,7 +93,7 @@ func (h *MainHandler) MapRoutes() {
 
 	h.Router.Use(CorsMiddleware)
 	h.Router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello world")
+		fmt.Fprintf(w, "The API is up")
 	})
 
 	for _, handler := range h.Handlers {
