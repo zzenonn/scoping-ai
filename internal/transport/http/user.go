@@ -180,7 +180,7 @@ func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 func (h *UserHandler) mapRoutes(router chi.Router) {
 	router.Route("/api/v1/users", func(r chi.Router) {
-		r.Use(JwtMiddleware)
+		// r.Use(JwtMiddleware)
 
 		r.Method("POST", "/", http.HandlerFunc(h.PostUser))
 		r.Method("GET", "/", http.HandlerFunc(h.GetAllUsers)) // JwtMiddleware(http.HandlerFunc(h.GetAllUsers)))

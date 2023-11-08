@@ -226,7 +226,7 @@ func (h *MessageHandler) DeleteMessage(w http.ResponseWriter, r *http.Request) {
 func (h *MessageHandler) mapRoutes(router chi.Router) {
 	router.Route("/api/v1/users/{userId}/messages", func(r chi.Router) {
 
-		r.Use(JwtMiddleware)
+		// r.Use(JwtMiddleware)
 
 		r.Post("/", h.PostMessage)
 		r.Post("/answers", h.PostAnswers)

@@ -197,7 +197,7 @@ func (h *CourseOutlineHandler) DeleteCourseOutline(w http.ResponseWriter, r *htt
 func (h *CourseOutlineHandler) mapRoutes(router chi.Router) {
 	router.Route("/api/v1/course-outlines", func(r chi.Router) {
 
-		r.Use(JwtMiddleware)
+		// r.Use(JwtMiddleware)
 
 		r.Post("/", h.PostCourseOutline)
 
