@@ -1,0 +1,573 @@
+openapi: "3.0.0"
+info:
+  title: "TNA IT Training API"
+  version: "1.0.0"
+
+paths:
+
+  /api/v1/question-sets:
+    post:
+      summary: "Create a new question set"
+      operationId: "postQuestionSet"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionSet'
+      responses:
+        '200':
+          description: "Question set created"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionSet'
+    get:
+      summary: "Retrieve all question sets"
+      operationId: "getAllQuestionSets"
+      parameters:
+        - name: "name"
+          in: "query"
+          schema:
+            type: "string"
+          description: "Technology name to filter the question sets"
+      responses:
+        '200':
+          description: "List of question sets"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: '#/components/schemas/QuestionSet'
+
+  /api/v1/question-sets/{id}:
+    get:
+      summary: "Retrieve a question set by ID"
+      operationId: "getQuestionSet"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: "Question set data"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionSet'
+    put:
+      summary: "Update a question set by ID"
+      operationId: "updateQuestionSet"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionSet'
+      responses:
+        '200':
+          description: "Question set updated"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionSet'
+    delete:
+      summary: "Delete a question set by ID"
+      operationId: "deleteQuestionSet"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: "Question set deleted"
+
+  /api/v1/course-outlines:
+    post:
+      summary: "Create a new course outline"
+      operationId: "postCourseOutline"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseOutline'
+      responses:
+        '200':
+          description: "Course outline created"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseOutline'
+    get:
+      summary: "Retrieve all course outlines"
+      operationId: "getAllCourseOutlines"
+      parameters:
+        - name: "filterName"
+          in: "query"
+          schema:
+            type: "string"
+          description: "Name of the filter"
+        - name: "filterValue"
+          in: "query"
+          schema:
+            type: "string"
+          description: "Value of the filter"
+      responses:
+        '200':
+          description: "List of course outlines"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: '#/components/schemas/CourseOutline'
+
+  /api/v1/course-outlines/{id}:
+    get:
+      summary: "Retrieve a course outline by ID"
+      operationId: "getCourseOutline"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: "Course outline data"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseOutline'
+    put:
+      summary: "Update a course outline by ID"
+      operationId: "updateCourseOutline"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseOutline'
+      responses:
+        '200':
+          description: "Course outline updated"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseOutline'
+    delete:
+      summary: "Delete a course outline by ID"
+      operationId: "deleteCourseOutline"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: "Course outline deleted"
+
+  /api/v1/users:
+    post:
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+    get:
+      summary: Get all users with pagination
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: A list of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '500':
+          description: Internal server error
+
+  /api/v1/users/{id}:
+    get:
+      summary: Get a user by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+    put:
+      summary: Update a user by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+    delete:
+      summary: Delete a user by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User deleted successfully
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+  /api/v1/users/{userId}/messages:
+    post:
+      summary: Post a new message
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+      responses:
+        '200':
+          description: Message posted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+    get:
+      summary: Get all messages of a user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+          example: 10
+      responses:
+        '200':
+          description: List of messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+  /api/v1/users/{userId}/messages/answers:
+    post:
+      summary: Post an array of messages with question/answer pairs
+      description: |
+        This endpoint is used to post an array of messages with question/answer pairs.
+        The endpoint will create a new message for each question/answer pair and post them
+        to the open AI API. The initial response from this API will be a placeholder message.
+        The message will be updated with the response from the open AI API when it is available.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Message'
+
+  /api/v1/users/{userId}/messages/{messageId}:
+    get:
+      summary: Get a specific message
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: messageId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Message details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+    put:
+      summary: Update a message
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: messageId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+      responses:
+        '200':
+          description: Message updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+    delete:
+      summary: Delete a message
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: messageId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Message deleted successfully
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+
+components:
+  schemas:
+
+    Options:
+      type: "object"
+      properties:
+        multi_answer:
+          type: "boolean"
+          default: false
+          nullable: true
+        possible_options:
+          type: "array"
+          items:
+            type: "string"
+      required: []
+
+    Question:
+      type: "object"
+      properties:
+        category:
+          type: "string"
+          nullable: true
+        text:
+          type: "string"
+          nullable: true
+        options:
+          $ref: '#/components/schemas/Options'
+      required: []
+
+    QuestionSet:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        technology_name:
+          type: "string"
+          nullable: false
+        questions:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/Question'
+      required:
+        - id
+
+    CourseOutline:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        technology_name:
+          type: "string"
+          nullable: false
+        course_code:
+          type: "string"
+          nullable: false
+        course_name:
+          type: "string"
+          nullable: true
+        outline:
+          type: "string"
+          nullable: true
+      required:
+        - id
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          nullable: true
+        email_address:
+          type: string
+          nullable: true
+        corporate:
+          type: boolean
+        company:
+          type: string
+          nullable: true
+
+    Answer:
+      type: object
+      properties:
+        question:
+          $ref: '#/components/schemas/Question'
+        technology_name:
+          type: string
+        answer:
+          type: string
+
+    Message:
+      type: object
+      properties:
+        id:
+          type: string
+        user_id:
+          type: string
+          nullable: true
+        message_text:
+          type: string
+          nullable: true
+          description: "Required if 'answers' not present."
+        answer:
+          $ref: '#/components/schemas/Answer'
+          nullable: true
+          description: "Required if 'message_text' not present."
+        created_at:
+          type: string
+          format: date-time
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
