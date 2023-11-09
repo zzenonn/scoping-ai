@@ -16,4 +16,4 @@ FROM alpine:latest AS prod
 COPY --from=builder /app .
 
 # Using the project ID as a flag for running the app
-CMD ["./app", "--project-id", "genai-tna"]
+CMD ["./app", "--project-id", "admu-iscs-30-23"]

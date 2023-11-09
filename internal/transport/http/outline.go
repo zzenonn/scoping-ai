@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	log "github.com/sirupsen/logrus"
-	outline "gitlab.com/zzenonn/scoping-ai/internal/outline"
+	outline "github.com/zzenonn/scoping-ai/internal/outline"
 )
 
 func init() {

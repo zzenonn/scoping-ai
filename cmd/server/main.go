@@ -14,12 +14,12 @@ import (
 	secretmanager "cloud.google.com/go/secretmanager/apiv1"
 	secretmanagerpb "cloud.google.com/go/secretmanager/apiv1/secretmanagerpb"
 
-	"gitlab.com/zzenonn/scoping-ai/internal/db"
-	scopingMessage "gitlab.com/zzenonn/scoping-ai/internal/message"
-	outline "gitlab.com/zzenonn/scoping-ai/internal/outline"
-	questionSet "gitlab.com/zzenonn/scoping-ai/internal/question-set"
-	transportHttp "gitlab.com/zzenonn/scoping-ai/internal/transport/http"
-	scopingUser "gitlab.com/zzenonn/scoping-ai/internal/user"
+	"github.com/zzenonn/scoping-ai/internal/db"
+	scopingMessage "github.com/zzenonn/scoping-ai/internal/message"
+	outline "github.com/zzenonn/scoping-ai/internal/outline"
+	questionSet "github.com/zzenonn/scoping-ai/internal/question-set"
+	transportHttp "github.com/zzenonn/scoping-ai/internal/transport/http"
+	scopingUser "github.com/zzenonn/scoping-ai/internal/user"
 )
 
 func init() {

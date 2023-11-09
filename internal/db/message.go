@@ -8,7 +8,7 @@ import (
 
 	"cloud.google.com/go/firestore"
 	log "github.com/sirupsen/logrus"
-	scopingMessage "gitlab.com/zzenonn/scoping-ai/internal/message"
+	scopingMessage "github.com/zzenonn/scoping-ai/internal/message"
 	"google.golang.org/api/iterator"
 )
 

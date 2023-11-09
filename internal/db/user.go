@@ -7,7 +7,7 @@ import (
 
 	"cloud.google.com/go/firestore"
 	log "github.com/sirupsen/logrus"
-	scopingUser "gitlab.com/zzenonn/scoping-ai/internal/user"
+	scopingUser "github.com/zzenonn/scoping-ai/internal/user"
 	"google.golang.org/api/iterator"
 )
 

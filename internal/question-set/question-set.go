@@ -8,7 +8,7 @@ import (
 
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
-	scopingaicommon "gitlab.com/zzenonn/scoping-ai/pkg/common"
+	scopingaicommon "github.com/zzenonn/scoping-ai/pkg/common"
 )
 
 var (

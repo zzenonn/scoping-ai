@@ -19,7 +19,7 @@ tasks:
 
   deploy:
     cmds:
-      - docker build --build-arg PROJECT_ID=genai-tna -t trainocate-tna:latest .
-      - docker tag trainocate-tna:latest gcr.io/genai-tna/trainocate-tna:latest
-      - docker push gcr.io/genai-tna/trainocate-tna:latest
-      - gcloud run deploy genai-api --image gcr.io/genai-tna/trainocate-tna:latest --project genai-tna --port 8080 --service-account backendapi@genai-tna.iam.gserviceaccount.com --region asia-southeast1 --allow-unauthenticated
+      - docker build --build-arg PROJECT_ID=admu-iscs-30-23 -t scoping-ai:latest .
+      - docker tag scoping-ai:latest gcr.io/admu-iscs-30-23/scoping-ai:latest
+      - docker push gcr.io/admu-iscs-30-23/scoping-ai:latest
+      - gcloud run deploy genai-api --image gcr.io/admu-iscs-30-23/scoping-ai:latest --project admu-iscs-30-23  --port 8080 --service-account backendapi@admu-iscs-30-23.iam.gserviceaccount.com --region asia-southeast1 --allow-unauthenticated

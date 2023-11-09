@@ -3,7 +3,7 @@ version: '3.8'
 services:
   api:
     build: .
-    container_name: "genai-api"
+    container_name: "scoping-ai-api"
     volumes:
       - ~/.config/gcloud:/root/.config/gcloud
     ports:

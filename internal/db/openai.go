@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	log "github.com/sirupsen/logrus"
-	scopingMessage "gitlab.com/zzenonn/scoping-ai/internal/message"
+	scopingMessage "github.com/zzenonn/scoping-ai/internal/message"
 )
 
 func init() {

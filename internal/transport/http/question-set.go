@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	log "github.com/sirupsen/logrus"
-	questionSet "gitlab.com/zzenonn/scoping-ai/internal/question-set"
+	questionSet "github.com/zzenonn/scoping-ai/internal/question-set"
 )
 
 func init() {

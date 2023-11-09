@@ -10,7 +10,7 @@ import (
 
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
-	scopingaicommon "gitlab.com/zzenonn/scoping-ai/pkg/common"
+	scopingaicommon "github.com/zzenonn/scoping-ai/pkg/common"
 )
 
 func init() {
@@ -122,12 +122,28 @@ func (service *MessageService) promptOpenAi(postedMessages []Message, responseMe
 
 	var promptBuilder strings.Builder
 
-	aiContext := `You are a technical expert on AWS training. A prospective student will be answering some scoping questions. 
-				  Recommend the most suitable official AWS Instructor Led Training based on their rpowershell "$m=(Get-Volume -Fianswers. You can only recommend one of
-				  the following official AWS courses Technical Essentials on AWS Architecting on AWS, Developing on AWS, Cloud Operations (SysOps) on AWS, 
-				  DevOps Engineering on AWS, The Machine Learning Pipeline on AWS, Advanced Architecting on AWS, Security Engineering on AWS, 
-				  Data Analytics (Big Data) on AWS. Do NOT recommend any other courses. You may recommend a combination of courses.
-				  If they have any questions, direct them to ph-inquiries@trainocate.com`
+	aiContext := `As a sales representative, you'll offer a range of mobile plans:
+
+	Plans Without Device:
+	
+		Plan 599: Provides 2.5GB of data, unlimited calls and texts across all networks, and 25 minutes of calls to PLDT.
+		Plan 599 with Netflix: Same as above but includes 5GB of data, unlimited landline calls, and a Netflix subscription.
+		Plan 999: Offers 5GB data, unlimited calls and texts, and 50 minutes to PLDT.
+		Plan 1,499: Upgrades to 10GB data, with unlimited calls and texts, plus 100 minutes to PLDT.
+		Plan 1,999: Includes 15GB data, unlimited calls and texts, and 150 minutes to PLDT.
+		Plan 2,499: Offers a large data allowance of 60GB, with unlimited calls, texts, and a Netflix subscription.
+		Plan 2,999: Comes with 30GB data, unlimited calls and texts, and the highest PLDT call allowance of 300 minutes.
+	
+	Plans With Device:
+	
+		Plan 599: Includes 2.5GB data, unlimited calls and texts, 25 minutes to PLDT, with a device.
+		Plan 999: Offers 20GB data, unlimited 5G (for 12 months), calls, texts, landline calls, Netflix, and a device.
+		Plan 1,499 Option 1: Provides 40GB data, unlimited 5G access (12-month promo), calls, texts, landline calls, Netflix, and a device.
+		Plan 1,999: Comes with 60GB data, unlimited 5G (for 12 months), calls, texts, landline calls, Netflix, and a device.
+		Plan 2,999: Includes unlimited 4G/5G data, calls, texts, landline calls, Netflix, and a device.
+	
+	Remember that the "Unlimited 5G for 12 months" is a promotional feature and subject to change post-promotion. Your role is to understand customer needs and align them with the most suitable plan.
+	Do not ask for any additional feedback or elaboration from the customer.`
 
 	for _, msg := range postedMessages {
 		if msg.Answer != nil && msg.Answer.Question != nil && msg.Answer.Answer != nil {

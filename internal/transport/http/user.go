@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	log "github.com/sirupsen/logrus"
-	scopingUser "gitlab.com/zzenonn/scoping-ai/internal/user"
+	scopingUser "github.com/zzenonn/scoping-ai/internal/user"
 )
 
 func init() {
