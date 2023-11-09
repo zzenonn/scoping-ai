@@ -1,6 +1,6 @@
 openapi: "3.0.0"
 info:
-  title: "TNA IT Training API"
+  title: "Scoping AI API"
   version: "1.0.0"
 
 paths:
